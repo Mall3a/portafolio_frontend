@@ -1,11 +1,10 @@
 import "./App.scss";
-import SearchMovie from "./components/Login";
+import Login from "./components/Login";
 
 function App() {
   return (
     <div className="container">
-      <header className="header"> Iniciar Sesión</header>
-      <SearchMovie></SearchMovie>
+      <Login />
     </div>
   );
 }

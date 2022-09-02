@@ -1,22 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import { login } from "../api/LoginApi";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import styles from "./Login.module.scss";
+import Logo from "../images/logo.svg";
 
 const Login = () => {
-  const [user, setUser] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [errorMessages, setErrorMessages] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleOnClick = (e) => {
+  // Generate JSX code for error message
+  const renderErrorMessage = (name) =>
+    name === errorMessages.name && (
+      <div className={styles.errorMessage}>{errorMessages.message}</div>
+    );
+
+  // User Login info
+  const database = [
+    {
+      username: "user1",
+      password: "pass1",
+    },
+    {
+      username: "user2",
+      password: "pass2",
+    },
+  ];
+
+  const errors = {
+    user: "Usuario Incorrecto",
+    pass: "Contraseña Incorrecta",
+  };
+
+  const handleSubmit = (e) => {
+    //Prevent page reload
     e.preventDefault();
+    setErrorMessages({});
+    setIsSubmitted(false);
+
+    // Find user login info
+    const userData = database.find((u) => u.username === user);
+
+    // Compare user info
+    if (userData) {
+      if (userData.password !== pass) {
+        // Invalid password
+        setErrorMessages({ name: "pass", message: errors.pass });
+      } else {
+        setIsSubmitted(true);
+      }
+    } else {
+      // Username not found
+      setErrorMessages({ name: "user", message: errors.user });
+    }
   };
 
   return (
-    <div>
-      <form className={styles.loginForm} onSubmit={handleOnClick}>
+    <div className={styles.container}>
+      <img src={Logo} alt="Maipo Grande Logo" />
+      <form className={styles.loginForm} onSubmit={handleSubmit}>
         <TextField
           className={styles.userField}
           id="user"
@@ -25,14 +69,16 @@ const Login = () => {
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
+        {renderErrorMessage("user")}
         <TextField
-          className={styles.passwordField}
-          id="password"
+          className={styles.passField}
+          id="pass"
           label="Contraseña"
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={pass}
+          onChange={(e) => setPass(e.target.value)}
         />
+        {renderErrorMessage("pass")}
         <Button
           type="submit"
           variant="contained"
@@ -42,7 +88,7 @@ const Login = () => {
           Inciar Sesión
         </Button>
       </form>
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {isSubmitted && <div>Usuario logeado exitosamente</div>}
     </div>
   );
 };
