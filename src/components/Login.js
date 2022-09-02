@@ -37,6 +37,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     //Prevent page reload
     e.preventDefault();
+    //Clean states
     setErrorMessages({});
     setIsSubmitted(false);
 
@@ -72,6 +73,7 @@ const Login = () => {
         {renderErrorMessage("user")}
         <TextField
           className={styles.passField}
+          type="password"
           id="pass"
           label="Contraseña"
           variant="outlined"
