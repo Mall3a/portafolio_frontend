@@ -8,14 +8,8 @@ import Logo from "../images/logo.svg";
 const Login = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
-  const [errorMessages, setErrorMessages] = useState({});
+  const [errorMessage, setErrorMessage] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Generate JSX code for error message
-  const renderErrorMessage = (name) =>
-    name === errorMessages.name && (
-      <div className={styles.errorMessage}>{errorMessages.message}</div>
-    );
 
   // User Login info
   const database = [
@@ -29,17 +23,12 @@ const Login = () => {
     },
   ];
 
-  const errors = {
-    user: "Usuario Incorrecto",
-    pass: "Contraseña Incorrecta",
-  };
-
   const handleSubmit = (e) => {
     //Prevent page reload
     e.preventDefault();
     //Clean states
-    setErrorMessages({});
     setIsSubmitted(false);
+    setErrorMessage(false);
 
     // Find user login info
     const userData = database.find((u) => u.username === user);
@@ -48,13 +37,13 @@ const Login = () => {
     if (userData) {
       if (userData.password !== pass) {
         // Invalid password
-        setErrorMessages({ name: "pass", message: errors.pass });
+        setErrorMessage(true);
       } else {
         setIsSubmitted(true);
       }
     } else {
       // Username not found
-      setErrorMessages({ name: "user", message: errors.user });
+      setErrorMessage(true);
     }
   };
 
@@ -70,7 +59,6 @@ const Login = () => {
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
-        {renderErrorMessage("user")}
         <TextField
           className={styles.passField}
           type="password"
@@ -80,7 +68,11 @@ const Login = () => {
           value={pass}
           onChange={(e) => setPass(e.target.value)}
         />
-        {renderErrorMessage("pass")}
+        {errorMessage && (
+          <div className={styles.errorMessage}>
+            Usuario o Contraseña Incorrecta
+          </div>
+        )}
         <Button
           type="submit"
           variant="contained"
