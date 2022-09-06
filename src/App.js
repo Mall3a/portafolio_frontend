@@ -1,32 +1,30 @@
+// This is a React Router v6 app
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/Login";
-import HomePage from "./pages/Home";
-//import { ProfilePage } from "./pages/Profile";
-//import { SettingsPage } from "./pages/Settings";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import { AuthProvider } from "./AuthProvider";
+import { ProtectedRoute } from "./ProtectedRoute";
 
-export default function App() {
+const App = () => {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/home" element={<HomePage />} />
-      {/*       <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <SettingsPage />
-          </ProtectedRoute>
-        }
-      /> */}
-      <Route path="*" element={<LoginPage />} />
-    </Routes>
+    <>
+      <AuthProvider>
+        <Routes>
+          <Route index element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </AuthProvider>
+    </>
   );
-}
+};
+
+export default App;

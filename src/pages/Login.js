@@ -1,53 +1,54 @@
 import React, { useState } from "react";
-//import { login } from "../api/LoginApi";
+import { login } from "../api/LoginApi";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import styles from "./Login.module.scss";
 import Logo from "../images/logo.svg";
+// This is a React Router v6 app
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // User Login info
-  const database = [
-    {
-      username: "user1",
-      password: "pass1",
-    },
-    {
-      username: "user2",
-      password: "pass2",
-    },
-  ];
+  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     //Prevent page reload
     e.preventDefault();
-    //Clean states
-    setIsSubmitted(false);
-    setErrorMessage(false);
+    setLoading(true);
+    setIsError(false);
 
-    // Find user login info
-    const userData = database.find((u) => u.username === user);
+    const response = await login(user, pass);
+    const data = response.data;
 
-    // Compare user info
-    if (userData) {
-      if (userData.password !== pass) {
-        // Invalid password
-        setErrorMessage(true);
+    if (response.status === 200) {
+      if (data.usuario.length > 0) {
+        const token = data.usuario;
+        setAuth(token);
+        if (auth) navigate("/home");
       } else {
-        setIsSubmitted(true);
+        setIsError(true);
       }
+      setLoading(false);
     } else {
-      // Username not found
-      setErrorMessage(true);
+      setIsError(true);
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <Box className={styles.loadingContainer}>
+      <CircularProgress />
+    </Box>
+  ) : (
     <div className={styles.container}>
       <img src={Logo} alt="Maipo Grande Logo" />
       <form className={styles.loginForm} onSubmit={handleSubmit}>
@@ -68,7 +69,7 @@ const Login = () => {
           value={pass}
           onChange={(e) => setPass(e.target.value)}
         />
-        {errorMessage && (
+        {isError && (
           <div className={styles.errorMessage}>
             Usuario o Contraseña Incorrecta
           </div>
@@ -82,7 +83,6 @@ const Login = () => {
           Inciar Sesión
         </Button>
       </form>
-      {isSubmitted && <div>Usuario logeado exitosamente</div>}
     </div>
   );
 };
