@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    setAuth(null);
+    navigate("/login");
+    localStorage.clear();
+  };
 
   return (
     <>
-      <h2>Home (Protected)</h2>
+      <h2>Home</h2>
 
-      <div>Authenticated as {auth.nombre}</div>
+      {auth && <div>Autenticado como {auth.token.nombre}</div>}
 
-      {auth && <button type="button">Sign Out</button>}
+      {auth && (
+        <Button variant="contained" color="primary" onClick={handleLogOut}>
+          Cerrar Sesión
+        </Button>
+      )}
     </>
   );
 };

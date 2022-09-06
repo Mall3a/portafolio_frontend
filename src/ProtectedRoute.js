@@ -5,9 +5,10 @@ export const ProtectedRoute = ({ children }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  if (!auth) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
-
-  return children;
+  console.log("hola", auth);
+  return !auth.token ? (
+    <Navigate to="/login" replace state={{ from: location }} />
+  ) : (
+    children
+  );
 };

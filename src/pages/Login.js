@@ -30,10 +30,13 @@ const Login = () => {
     const data = response.data;
 
     if (response.status === 200) {
-      if (data.usuario.length > 0) {
-        const token = data.usuario;
-        setAuth(token);
-        if (auth) navigate("/home");
+      if (data.usuario.length === 1) {
+        const token = data.usuario[0];
+        setAuth({
+          token,
+        });
+        navigate("/home");
+        localStorage.setItem("token", JSON.stringify(token));
       } else {
         setIsError(true);
       }
