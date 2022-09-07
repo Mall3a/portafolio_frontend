@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -19,10 +19,12 @@ import { observer } from "mobx-react-lite";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import LogoHorizontal from "../../images/logo_h.svg";
+import styles from "./ResponsiveDrawer.module.scss";
 
 const drawerWidth = 240;
 
-const ResponsiveDrawer = observer(({ children, window }) => {
+const ResponsiveDrawer = observer(({ window }) => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -33,27 +35,69 @@ const ResponsiveDrawer = observer(({ children, window }) => {
   };
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  let [verPedidosTransportista, setVerPedidosTransportista] = useState(false);
+  let [verSubastas, setVerSubastas] = useState(false);
+  let [renderMenuOptionContent, setRenderMenuOptionContent] = useState(
+    <>Seleccione una de las opciones de menú para comenzar</>
+  );
+
+  useEffect(() => {
+    if (verPedidosTransportista) {
+      setRenderMenuOptionContent(<>Pedidos Transportista</>);
+    }
+    if (verSubastas) {
+      setRenderMenuOptionContent(<>Ver subastas</>);
+    }
+
+    //limpiar variables
+    setVerPedidosTransportista(false);
+    setVerSubastas(false);
+  }, [verPedidosTransportista, verSubastas]);
+
+  const menuTransportista = (
+    <List>
+      <ListItem
+        disablePadding
+        //selected={verSubastas}
+        onClick={() => setVerSubastas(true)}
+      >
+        <ListItemButton>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ver Subastas" />
+        </ListItemButton>
+      </ListItem>
+      <ListItem
+        disablePadding
+        //selected={verPedidosTransportista}
+        onClick={() => setVerPedidosTransportista(true)}
+      >
+        <ListItemButton>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ver Pedidos" />
+        </ListItemButton>
+      </ListItem>
+    </List>
+  );
+
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar>
+        <img
+          className={styles.logoHorizontal}
+          src={LogoHorizontal}
+          alt="Maipo Grande Logo"
+        />
+      </Toolbar>
       <Divider />
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      {auth.token.rol_id === 3 && menuTransportista}
     </div>
   );
 
@@ -80,9 +124,18 @@ const ResponsiveDrawer = observer(({ children, window }) => {
           >
             <MenuIcon />
           </IconButton>
-          {auth && <div>Bienvenido {auth.token.nombre}</div>}
           {auth && (
-            <Button variant="contained" color="primary" onClick={handleLogOut}>
+            <div>
+              Bienvenido {auth.token.nombre} - {auth.token.nombre_rol}
+            </div>
+          )}
+          {auth && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLogOut}
+              className={styles.logOutButton}
+            >
               Cerrar Sesión
             </Button>
           )}
@@ -135,7 +188,7 @@ const ResponsiveDrawer = observer(({ children, window }) => {
         }}
       >
         <Toolbar />
-        {children}
+        {renderMenuOptionContent}
       </Box>
     </Box>
   );

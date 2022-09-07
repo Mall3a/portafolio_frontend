@@ -1,10 +1,10 @@
 import React from "react";
-import Layout from "../components/Layout/Layout";
+import ResponsiveDrawer from "../components/Layout/ResponsiveDrawer";
 
 const Home = () => {
   return (
     <>
-      <Layout>home</Layout>
+      <ResponsiveDrawer />
     </>
   );
 };
