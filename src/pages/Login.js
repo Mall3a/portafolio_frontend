@@ -31,17 +31,25 @@ const Login = () => {
 
     if (response.status === 200) {
       if (data.usuario.length === 1) {
-        const token = data.usuario[0];
-        setAuth({
-          token,
-        });
-        navigate("/home");
-        localStorage.setItem("token", JSON.stringify(token));
+        //Usuario no es Administrador
+        if (data.usuario[0].rol_id !== 1) {
+          const token = data.usuario[0];
+          setAuth({
+            token,
+          });
+          navigate("/home");
+          localStorage.setItem("token", JSON.stringify(token));
+        } else {
+          /** TODO: poner mensaje personalizado que administrador debe logearse por app de escritorio */
+          setIsError(true);
+        }
       } else {
+        /** TODO: poner mensaje personalizado clave o usuario incorrecto */
         setIsError(true);
       }
       setLoading(false);
     } else {
+      /** TODO: poner mensaje personalizado error de servicio */
       setIsError(true);
       setLoading(false);
     }

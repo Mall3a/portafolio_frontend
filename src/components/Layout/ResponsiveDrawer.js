@@ -14,6 +14,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Toolbar from "@mui/material/Toolbar";
 import { observer } from "mobx-react-lite";
 import { Button } from "@mui/material";
@@ -47,10 +48,10 @@ const ResponsiveDrawer = observer(({ window }) => {
 
   useEffect(() => {
     if (verPedidosTransportista) {
-      setRenderMenuOptionContent(<>Pedidos Transportista</>);
+      setRenderMenuOptionContent(<>Pedidos Asignados</>);
     }
     if (verSubastas) {
-      setRenderMenuOptionContent(<>Ver subastas</>);
+      setRenderMenuOptionContent(<>Subastas Publicadas</>);
     }
 
     //limpiar variables
@@ -114,7 +115,7 @@ const ResponsiveDrawer = observer(({ window }) => {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -126,18 +127,14 @@ const ResponsiveDrawer = observer(({ window }) => {
           </IconButton>
           {auth && (
             <div>
-              Bienvenido {auth.token.nombre} - {auth.token.nombre_rol}
+              Bienvenido {auth.token.nombre} {auth.token.apellido_paterno} -{" "}
+              {auth.token.nombre_rol}
             </div>
           )}
           {auth && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleLogOut}
-              className={styles.logOutButton}
-            >
-              Cerrar Sesión
-            </Button>
+            <IconButton color="inherit" onClick={handleLogOut}>
+              <LogoutIcon />
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>
