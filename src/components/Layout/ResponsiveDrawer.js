@@ -17,11 +17,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Toolbar from "@mui/material/Toolbar";
 import { observer } from "mobx-react-lite";
-import { Button } from "@mui/material";
+import { Button, Table } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import LogoHorizontal from "../../images/logo_h.svg";
 import styles from "./ResponsiveDrawer.module.scss";
+import BasicTable from "../BasicTable";
 
 const drawerWidth = 240;
 
@@ -45,6 +46,7 @@ const ResponsiveDrawer = observer(({ window }) => {
   let [renderMenuOptionContent, setRenderMenuOptionContent] = useState(
     <>Seleccione una de las opciones de menú para comenzar</>
   );
+  let [verProductos, setVerProductos] = useState(false);
 
   useEffect(() => {
     if (verPedidosTransportista) {
@@ -54,10 +56,19 @@ const ResponsiveDrawer = observer(({ window }) => {
       setRenderMenuOptionContent(<>Subastas Publicadas</>);
     }
 
+    if (verProductos) {
+      setRenderMenuOptionContent(
+        <>
+          <BasicTable user={auth.token}></BasicTable>
+        </>
+      );
+    }
+
     //limpiar variables
     setVerPedidosTransportista(false);
     setVerSubastas(false);
-  }, [verPedidosTransportista, verSubastas]);
+    setVerProductos(false);
+  }, [verPedidosTransportista, verSubastas, verProductos]);
 
   const menuTransportista = (
     <List>
@@ -88,6 +99,22 @@ const ResponsiveDrawer = observer(({ window }) => {
     </List>
   );
 
+  const menuProductor = (
+    <List>
+      <ListItem
+        disablePadding
+        //selected={verSubastas}
+        onClick={() => setVerProductos(true)}
+      >
+        <ListItemButton>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ver Productos" />
+        </ListItemButton>
+      </ListItem>
+    </List>
+  );
   const drawer = (
     <div>
       <Toolbar>
@@ -99,6 +126,7 @@ const ResponsiveDrawer = observer(({ window }) => {
       </Toolbar>
       <Divider />
       {auth.token.rol_id === 3 && menuTransportista}
+      {auth.token.rol_id === 4 && menuProductor}
     </div>
   );
 

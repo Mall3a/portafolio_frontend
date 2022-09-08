@@ -9,3 +9,9 @@ export const login = async (user, password) => {
     p_pass: password,
   });
 };
+
+export const getProductosProductor = async (id) => {
+  return await axios.post(API_URL + "sp_get_productos_productor/", {
+    in_id_productor: id,
+  });
+};
