@@ -35,6 +35,7 @@ export default function BasicModal({ open, handleClose, rut }) {
   let [selectedProductId, setSelectedProductId] = useState(1);
 
   useEffect(() => {
+    //TODO: borrar variables al abrir modal
     getProducts();
   }, []);
 
@@ -91,7 +92,8 @@ export default function BasicModal({ open, handleClose, rut }) {
     setIsError(false);
 
     const response = await addProductosProductor(
-      Math.random(1000), //TODO arreglar id autoncrementable
+      Math.random(1000),
+      //TODO arreglar id autoncrementable
       selectedProductId,
       precio,
       calidad,

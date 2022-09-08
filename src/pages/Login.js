@@ -19,38 +19,48 @@ const Login = () => {
 
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+  let [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     //Prevent page reload
     e.preventDefault();
     setLoading(true);
     setIsError(false);
+    if (user && pass) {
+      const response = await login(user, pass);
+      const data = response.data;
 
-    const response = await login(user, pass);
-    const data = response.data;
+      if (response.status === 200) {
+        if (data.usuario.length === 1) {
+          //Usuario no es Administrador
+          if (data.usuario[0].rol_id !== 1) {
+            const token = data.usuario[0];
+            setAuth({
+              token,
+            });
+            navigate("/home");
+            localStorage.setItem("token", JSON.stringify(token));
+          } else {
+            setErrorMessage(
+              "Usuario administrador debe ingresar por la aplicación desktop"
+            );
 
-    if (response.status === 200) {
-      if (data.usuario.length === 1) {
-        //Usuario no es Administrador
-        if (data.usuario[0].rol_id !== 1) {
-          const token = data.usuario[0];
-          setAuth({
-            token,
-          });
-          navigate("/home");
-          localStorage.setItem("token", JSON.stringify(token));
+            setIsError(true);
+            setLoading(false);
+          }
         } else {
-          /** TODO: poner mensaje personalizado que administrador debe logearse por app de escritorio */
+          setErrorMessage("Clave o usuario incorrecto");
           setIsError(true);
+          setLoading(false);
         }
       } else {
-        /** TODO: poner mensaje personalizado clave o usuario incorrecto */
+        setErrorMessage("Servicio no disponible");
         setIsError(true);
+        setLoading(false);
       }
-      setLoading(false);
     } else {
-      /** TODO: poner mensaje personalizado error de servicio */
       setIsError(true);
+      setErrorMessage("Debe ingresar usuario y contraseña");
       setLoading(false);
     }
   };
@@ -80,11 +90,7 @@ const Login = () => {
           value={pass}
           onChange={(e) => setPass(e.target.value)}
         />
-        {isError && (
-          <div className={styles.errorMessage}>
-            Usuario o Contraseña Incorrecta
-          </div>
-        )}
+        {isError && <div className={styles.errorMessage}>{errorMessage}</div>}
         <Button
           type="submit"
           variant="contained"
