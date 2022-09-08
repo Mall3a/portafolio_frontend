@@ -15,3 +15,21 @@ export const getProductosProductor = async (id) => {
     in_id_productor: id,
   });
 };
+
+export const addProductosProductor = async (
+  id,
+  idProducto,
+  precio,
+  calidad,
+  cantidad,
+  rut
+) => {
+  return await axios.post(API_URL + "sp_insert_producto_productor/", {
+    in_id: id,
+    in_id_producto: idProducto,
+    in_precio: precio,
+    in_calidad: calidad,
+    in_cantidad: cantidad,
+    productor_rut: rut,
+  });
+};
