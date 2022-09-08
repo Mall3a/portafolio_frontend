@@ -40,13 +40,32 @@ export default function BasicModal({ open, handleClose, rut }) {
 
   const getProducts = async () => {
     //get productos
+
     const response = {
       data: {
         productos: [
           {
             id: 1,
             nombre: "Zanahoria",
-            descripcion: "",
+            descripcion: "color naranja",
+            imagen: "",
+          },
+          {
+            id: 2,
+            nombre: "Manzana",
+            descripcion: "color roja",
+            imagen: "",
+          },
+          {
+            id: 3,
+            nombre: "Pina",
+            descripcion: "del caribe",
+            imagen: "",
+          },
+          {
+            id: 4,
+            nombre: "Platano",
+            descripcion: "verde",
             imagen: "",
           },
         ],
@@ -72,7 +91,7 @@ export default function BasicModal({ open, handleClose, rut }) {
     setIsError(false);
 
     const response = await addProductosProductor(
-      12, //TODO arreglar id autoncrementable
+      Math.random(1000), //TODO arreglar id autoncrementable
       selectedProductId,
       precio,
       calidad,
