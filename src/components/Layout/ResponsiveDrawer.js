@@ -16,7 +16,6 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Toolbar from "@mui/material/Toolbar";
-import { observer } from "mobx-react-lite";
 import { Button, Table } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -26,7 +25,7 @@ import BasicTable from "../BasicTable";
 
 const drawerWidth = 240;
 
-const ResponsiveDrawer = observer(({ window }) => {
+const ResponsiveDrawer = ({ window }) => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -217,7 +216,7 @@ const ResponsiveDrawer = observer(({ window }) => {
       </Box>
     </Box>
   );
-});
+};
 
 ResponsiveDrawer.propTypes = {
   /**
