@@ -42,14 +42,14 @@ const Login = () => {
             localStorage.setItem("token", JSON.stringify(token));
           } else {
             setErrorMessage(
-              "Usuario administrador debe ingresar por la aplicación desktop"
+              "Usuario administrador debe ingresar por la aplicación de escritorio"
             );
 
             setIsError(true);
             setLoading(false);
           }
         } else {
-          setErrorMessage("Clave o usuario incorrecto");
+          setErrorMessage("Usario o contraseña incorrecta");
           setIsError(true);
           setLoading(false);
         }

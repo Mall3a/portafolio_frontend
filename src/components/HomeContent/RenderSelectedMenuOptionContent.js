@@ -8,6 +8,8 @@ const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
   return (
     <>
       {store.selectedMenuOption === "Productos" && <Products user={user} />}
+      {store.selectedMenuOption === "Subastas" && <>Subastas</>}
+      {store.selectedMenuOption === "Pedidos" && <>Pedidos</>}
       {store.selectedMenuOption === "Perfil" && <Profile user={user} />}
     </>
   );

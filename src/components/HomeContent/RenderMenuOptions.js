@@ -23,24 +23,24 @@ const RenderMenuOptions = observer(({ store, user }) => {
   );
   const driverMenu = (
     <React.Fragment>
-      <ListItemButton>
+      <ListItemButton onClick={() => store.setSelectedMenuOption("Subastas")}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary="Ver Subastas" />
+        <ListItemText primary="Subastas" />
       </ListItemButton>
-      <ListItemButton>
+      <ListItemButton onClick={() => store.setSelectedMenuOption("Pedidos")}>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
-        <ListItemText primary="Ver Pedidos" />
+        <ListItemText primary="Pedidos" />
       </ListItemButton>
     </React.Fragment>
   );
 
   const consultantMenu = (
     <React.Fragment>
-      <ListItemButton>
+      <ListItemButton onClick={() => store.setSelectedMenuOption("Reportes")}>
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
@@ -60,6 +60,7 @@ const RenderMenuOptions = observer(({ store, user }) => {
   );
   return (
     <>
+      {user.rol_id === 3 && driverMenu}
       {user.rol_id === 4 && producerMenu}
       <Divider sx={{ my: 1 }} />
       {commonMenu}

@@ -98,7 +98,7 @@ const Layout = observer(({ store }) => {
     setAuth(null);
     navigate("/login");
     localStorage.clear();
-    store.setSelectedMenuOption("");
+    store.setSelectedMenuOption("Perfil");
   };
 
   const [open, setOpen] = React.useState(true);

@@ -12,6 +12,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import styles from "./AddProductModal.module.scss";
+import Title from "../../common/Title";
 
 const style = {
   position: "absolute",
@@ -86,7 +87,8 @@ export default function AddProductModal({ open, handleClose, rut }) {
       setLoading(false);
     }
   };
-  const handleAgregar = async (e) => {
+
+  const handleAgregarProducto = async (e) => {
     e.preventDefault();
     setLoading(true);
     setIsError(false);
@@ -117,20 +119,18 @@ export default function AddProductModal({ open, handleClose, rut }) {
 
   const handleChange = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setSelectedProductId(e.target.value);
   };
 
   return (
     <div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <form onSubmit={handleAgregar} className={styles.formContainer}>
+          <Title>Agregar Producto</Title>
+          <form
+            onSubmit={handleAgregarProducto}
+            className={styles.formContainer}
+          >
             {loading ? (
               <Box className={styles.loadingContainer}>
                 <CircularProgress />

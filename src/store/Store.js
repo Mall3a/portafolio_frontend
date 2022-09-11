@@ -1,7 +1,7 @@
 import { action, makeAutoObservable, observable } from "mobx";
 
 export class StoreImpl {
-  selectedMenuOption = "";
+  selectedMenuOption = "Perfil";
 
   constructor() {
     makeAutoObservable(this, {

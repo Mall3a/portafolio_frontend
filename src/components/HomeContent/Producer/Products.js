@@ -54,20 +54,22 @@ export default function Products({ user }) {
     }
   };
 
-  const handleAgregar = () => {
-    handleOpen();
-  };
-
   return loading ? (
     <Box className={styles.loadingContainer}>
       <CircularProgress />
     </Box>
   ) : (
     <>
-      <Button variant="contained" color="primary" onClick={handleAgregar}>
-        Agregar
-      </Button>
       <Grid item xs={12}>
+        <div className={styles.container}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpen()}
+          >
+            Agregar
+          </Button>
+        </div>
         <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
           <React.Fragment>
             <Title>Productos</Title>
@@ -89,9 +91,14 @@ export default function Products({ user }) {
                     <TableCell component="th" scope="row">
                       {row.nombre_producto}
                     </TableCell>
-                    <TableCell align="right">{row.precio}</TableCell>
+                    <TableCell align="right">
+                      {Intl.NumberFormat("es-CL", {
+                        currency: "CLP",
+                        style: "currency",
+                      }).format(row.precio)}
+                    </TableCell>
                     <TableCell align="right">{row.calidad}</TableCell>
-                    <TableCell align="right">{row.cantidad}</TableCell>
+                    <TableCell align="right">{row.cantidad} kg</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
