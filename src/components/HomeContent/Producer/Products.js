@@ -63,7 +63,7 @@ export default function Products({ user }) {
       <CircularProgress />
     </Box>
   ) : (
-    <div className={styles.container}>
+    <>
       <Button variant="contained" color="primary" onClick={handleAgregar}>
         Agregar
       </Button>
@@ -104,6 +104,6 @@ export default function Products({ user }) {
         rut={user.rut}
         handleClose={(e) => handleClose(e)}
       ></AddProductModal>
-    </div>
+    </>
   );
 }
