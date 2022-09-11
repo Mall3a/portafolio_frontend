@@ -22,6 +22,7 @@ import AppBarTitle from "../common/AppBarTitle";
 import { observer } from "mobx-react-lite";
 import { Store } from "../../store/Store";
 import RenderSelectedMenuOptionContent from "./RenderSelectedMenuOptionContent";
+import logoHorizontal from "../../images/logo_h2.png";
 
 function Copyright(props) {
   return (
@@ -147,6 +148,13 @@ const Layout = observer(({ store }) => {
               px: [1],
             }}
           >
+            <div>
+              <img
+                alt="Maipo Grande logo horizontal"
+                style={{ width: "100%" }}
+                src={logoHorizontal}
+              ></img>
+            </div>
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
