@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { addProductosProductor } from "../api/LoginApi";
+import { addProductosProductor } from "../../../api/Apis";
 import React, { useEffect, useState } from "react";
 import {
   CircularProgress,
@@ -11,7 +11,7 @@ import {
   TextField,
   MenuItem,
 } from "@mui/material";
-import styles from "./BasicModal.module.scss";
+import styles from "./AddProductModal.module.scss";
 
 const style = {
   position: "absolute",
@@ -25,7 +25,7 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, rut }) {
+export default function AddProductModal({ open, handleClose, rut }) {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   let [precio, setPrecio] = useState(1);

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -9,18 +9,19 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { mainListItems, secondaryListItems } from "./listItems";
-import Dashboard from "./Dashboard";
+import RenderMenuOptions from "./RenderMenuOptions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import AppBarTitle from "../common/AppBarTitle";
+import { observer } from "mobx-react-lite";
+import { Store } from "../../store/Store";
+import RenderSelectedMenuOptionContent from "./RenderSelectedMenuOptionContent";
 
 function Copyright(props) {
   return (
@@ -88,7 +89,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function Layout() {
+const Layout = observer(({ store }) => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -96,8 +97,11 @@ function Layout() {
     setAuth(null);
     navigate("/login");
     localStorage.clear();
+    store.setSelectedMenuOption("");
   };
+
   const [open, setOpen] = React.useState(true);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -124,9 +128,9 @@ function Layout() {
             >
               <MenuIcon />
             </IconButton>
-            {/**TODO: cambiar titulo segun opcion seleccionada de menu */}
-
-            <AppBarTitle title="Dashboard"></AppBarTitle>
+            <AppBarTitle
+              title={`Bienvenido ${auth.token.nombre} ${auth.token.apellido_paterno} - ${auth.token.nombre_rol}`}
+            ></AppBarTitle>
             {auth && (
               <IconButton color="inherit" onClick={handleLogOut}>
                 <LogoutIcon />
@@ -149,11 +153,7 @@ function Layout() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {/**TODO: cambiar contenido segun rol */}
-
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            <RenderMenuOptions store={Store} user={auth.token} />
           </List>
         </Drawer>
         <Box
@@ -171,8 +171,10 @@ function Layout() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/**TODO: cambiar contenido segun opcion seleccionada de menu */}
-              <Dashboard></Dashboard>
+              <RenderSelectedMenuOptionContent
+                store={Store}
+                user={auth.token}
+              />
             </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>
@@ -180,6 +182,6 @@ function Layout() {
       </Box>
     </ThemeProvider>
   );
-}
+});
 
 export default Layout;
