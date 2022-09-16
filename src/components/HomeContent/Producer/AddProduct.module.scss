@@ -1,0 +1,22 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
+
+  align-items: flex-start;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.buttonsContainer {
+  padding: 10px 0px 10px 0px;
+  gap: 10px;
+  display: flex;
+  justify-content: end;
+  .addProductButton {
+    width: 115px;
+  }
+}

@@ -13,20 +13,31 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Products.module.scss";
 import { Button } from "@mui/material";
-import AddProductModal from "./AddProductModal";
+import AddProduct from "./AddProduct";
+import { IconButton } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import { Close } from "@mui/icons-material";
+import Quality from "../../common/Quality";
 
-export default function Products({ user }) {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+
+const Products = ({ user }) => {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   let [productos, setProductos] = useState([{}]);
-
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-
-  const handleClose = (e) => {
-    setOpen(false);
-    if (e === "modified") getProducerProducts();
-  };
+  let [toggleModal, setToggleModal] = useState(false);
 
   useEffect(() => {
     getProducerProducts();
@@ -65,7 +76,7 @@ export default function Products({ user }) {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleOpen()}
+            onClick={() => setToggleModal(true)}
           >
             Agregar
           </Button>
@@ -97,7 +108,9 @@ export default function Products({ user }) {
                         style: "currency",
                       }).format(row.precio)}
                     </TableCell>
-                    <TableCell align="right">{row.calidad}</TableCell>
+                    <TableCell align="right">
+                      <Quality value={row.calidad} readOnly />
+                    </TableCell>
                     <TableCell align="right">{row.cantidad} kg</TableCell>
                   </TableRow>
                 ))}
@@ -106,11 +119,24 @@ export default function Products({ user }) {
           </React.Fragment>
         </Paper>
       </Grid>
-      <AddProductModal
-        open={open}
-        rut={user.rut}
-        handleClose={(e) => handleClose(e)}
-      ></AddProductModal>
+      <Modal open={toggleModal} disableEscapeKeyDown>
+        <Box sx={style}>
+          <div className={styles.modalTitleContainer}>
+            <Title>Agregar Producto</Title>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setToggleModal(false)}
+              style={{ alignSelf: "end" }}
+            >
+              <Close />
+            </IconButton>
+          </div>
+          <AddProduct rut={user.rut} />
+        </Box>
+      </Modal>
     </>
   );
-}
+};
+
+export default Products;
