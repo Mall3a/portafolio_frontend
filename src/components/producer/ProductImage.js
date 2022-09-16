@@ -1,3 +1,4 @@
+import { Avatar } from "@mui/material";
 import React from "react";
 import ManzanaIcon from "../../images/manzana.svg";
 import PinaIcon from "../../images/pina.svg";
@@ -28,9 +29,8 @@ const ProductImage = ({ productName }) => {
     return src;
   };
 
-  return (
-    <img src={getImageSrc()} style={{ width: "50px", height: "50px" }}></img>
-  );
+  return <img src={getImageSrc()} style={{ width: 50, height: 50 }} />;
+  //<Avatar src={getImageSrc()} sx={{ width: 56, height: 56 }} />;
 };
 
 export default ProductImage;

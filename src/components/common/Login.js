@@ -133,7 +133,11 @@ const Login = () => {
             Inciar Sesión
           </Button>
         )}
-        {hasError && <Alert severity="error">{errorMessage}</Alert>}
+        {errorMessage && (
+          <Alert severity="error" onClose={() => setErrorMessage("")}>
+            {errorMessage}
+          </Alert>
+        )}
       </form>
     </div>
   );

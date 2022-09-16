@@ -37,7 +37,8 @@ const Products = ({ user }) => {
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
   let [productos, setProductos] = useState([{}]);
-  let [toggleModal, setToggleModal] = useState(false);
+  let [toggleAddProductModal, setToggleAddProductModal] = useState(false);
+  let [toggleDeleteProductModal, setToggleDeleteProductModal] = useState(false);
 
   useEffect(() => {
     getProducerProducts();
@@ -63,99 +64,103 @@ const Products = ({ user }) => {
     }
   };
 
-  //TODO: recuperar imagen svg de base de datos o poner en archivo
-
-  return loading ? (
-    <Box className={styles.loadingContainer}>
-      <CircularProgress />
-    </Box>
-  ) : (
+  return (
     <>
-      <Grid item xs={12}>
-        <div className={styles.buttonContainer}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setToggleModal(true)}
-          >
-            Agregar
-          </Button>
-        </div>
-        {productos.length > 0 ? (
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <React.Fragment>
-              <Title>Productos</Title>
-              <Table size="large">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center">Imagen</TableCell>
-                    <TableCell align="right">Nombre</TableCell>
-                    <TableCell align="right">Precio</TableCell>
-                    <TableCell align="center">Calidad</TableCell>
-                    <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
-                    <TableCell align="right"></TableCell>
-                    <TableCell align="right"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {productos.map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="center">
-                        <ProductImage productName={row.nombre_producto} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" align="right">
-                        {row.nombre_producto}
-                      </TableCell>
-                      <TableCell align="right">
-                        {Intl.NumberFormat("es-CL", {
-                          currency: "CLP",
-                          style: "currency",
-                        }).format(row.precio)}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Quality value={row.calidad} readOnly />
-                      </TableCell>
-                      <TableCell align="right">{row.cantidad} kg</TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          //onClick={() => editProduct(id)}
-                          style={{ alignSelf: "end", color: "#1976d2" }}
-                        >
-                          <Edit />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          //onClick={() => deleteProduct(id)}
-                          style={{ alignSelf: "end", color: "#d42c2c" }}
-                        >
-                          <DeleteForever />
-                        </IconButton>
-                      </TableCell>
+      {loading ? (
+        <Box className={styles.loadingContainer}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Grid item xs={12}>
+          <div className={styles.buttonContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setToggleAddProductModal(true)}
+            >
+              Agregar
+            </Button>
+          </div>
+          {productos.length > 0 ? (
+            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+              <React.Fragment>
+                <Title>Productos</Title>
+                <Table size="large">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">Imagen</TableCell>
+                      <TableCell align="right">Nombre</TableCell>
+                      <TableCell align="right">Precio</TableCell>
+                      <TableCell align="center">Calidad</TableCell>
+                      <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
+                      <TableCell align="right"></TableCell>
+                      <TableCell align="right"></TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </React.Fragment>
-          </Paper>
-        ) : hasError ? (
-          <Alert severity="error">
-            Ha ocurrido un error al intentar obtener la lista de productos
-          </Alert>
-        ) : (
-          <Alert severity="info">
-            Agregue un producto para visualizarlo en ésta área
-          </Alert>
-        )}
-      </Grid>
-      <Modal open={toggleModal} disableEscapeKeyDown>
+                  </TableHead>
+                  <TableBody>
+                    {productos.map((row, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="center">
+                          <ProductImage productName={row.nombre_producto} />
+                        </TableCell>
+                        <TableCell component="th" scope="row" align="right">
+                          {row.nombre_producto}
+                        </TableCell>
+                        <TableCell align="right">
+                          {Intl.NumberFormat("es-CL", {
+                            currency: "CLP",
+                            style: "currency",
+                          }).format(row.precio)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Quality value={row.calidad} readOnly />
+                        </TableCell>
+                        <TableCell align="right">{row.cantidad} kg</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            //onClick={() => editProduct(id)}
+                            style={{ alignSelf: "end", color: "#1976d2" }}
+                          >
+                            <Edit />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            //TODO: recibir y pasar row.id de producto para eliminarlo
+                            //onClick={() => deleteProduct(row.id)}
+                            onClick={() => setToggleDeleteProductModal(true)}
+                            style={{ alignSelf: "end", color: "#d42c2c" }}
+                          >
+                            <DeleteForever />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </React.Fragment>
+            </Paper>
+          ) : hasError ? (
+            <Alert severity="error">
+              Ha ocurrido un error al intentar obtener la lista de productos
+            </Alert>
+          ) : (
+            <Alert severity="info">
+              Agregue un producto para visualizarlo en ésta área
+            </Alert>
+          )}
+        </Grid>
+      )}
+      <Modal open={toggleAddProductModal} disableEscapeKeyDown>
         <Box sx={style}>
           <div className={styles.modalTitleContainer}>
             <Title>Agregar Producto</Title>
@@ -163,7 +168,7 @@ const Products = ({ user }) => {
               edge="start"
               color="inherit"
               onClick={() => {
-                setToggleModal(false);
+                setToggleAddProductModal(false);
               }}
               style={{ alignSelf: "end" }}
             >
@@ -172,15 +177,44 @@ const Products = ({ user }) => {
           </div>
           <AddProduct
             rut={user.rut}
-            onSuccess={(value) => {
-              if (value) {
-                setTimeout(() => {
-                  setToggleModal(false);
-                  getProducerProducts();
-                }, 1000);
-              }
+            onSuccess={() => {
+              getProducerProducts();
             }}
           />
+        </Box>
+      </Modal>
+      <Modal open={toggleDeleteProductModal} disableEscapeKeyDown>
+        <Box sx={style}>
+          <div className={styles.modalTitleContainer}>
+            <Title>Eliminar Producto</Title>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => {
+                setToggleDeleteProductModal(false);
+              }}
+              style={{ alignSelf: "end" }}
+            >
+              <Close />
+            </IconButton>
+          </div>
+          <div className={styles.deleteContainer}>
+            <label> ¿Está seguro que desea eliminar el producto?</label>{" "}
+            <div className={styles.modalButtonsContainer}>
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => {
+                  setToggleDeleteProductModal(false);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button color="error" variant="contained">
+                Eliminar
+              </Button>
+            </div>
+          </div>
         </Box>
       </Modal>
     </>

@@ -33,6 +33,7 @@ const AddProduct = ({ rut, onSuccess }) => {
   let [productos, setProductos] = useState([{}]);
   let [selectedProductId, setSelectedProductId] = useState(1);
   let [errorMessage, setErrorMessage] = useState("");
+  let [successMessage, setSuccessMessage] = useState("");
   const [hasError, setHasError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(false);
@@ -42,12 +43,15 @@ const AddProduct = ({ rut, onSuccess }) => {
     setHasError(false);
     setSuccess(false);
     setErrorMessage("");
+    setSuccessMessage("");
+
     getProducts();
 
     return () => {
       setHasError(false);
       setSuccess(false);
       setErrorMessage("");
+      setSuccessMessage("");
     };
   }, []);
 
@@ -71,7 +75,8 @@ const AddProduct = ({ rut, onSuccess }) => {
 
   useEffect(() => {
     if (success) {
-      onSuccess(success);
+      onSuccess();
+      setSuccess(false);
     }
   }, [onSuccess, success]);
 
@@ -81,6 +86,7 @@ const AddProduct = ({ rut, onSuccess }) => {
     setHasError(false);
     setSuccess(false);
     setErrorMessage("");
+    setSuccessMessage("");
 
     if (precio && cantidad) {
       if (precio.value >= 1 && cantidad >= 1) {
@@ -97,6 +103,7 @@ const AddProduct = ({ rut, onSuccess }) => {
         if (response.status === 200) {
           if (data.out_mensaje_salida === "PRODUCTO CREADO CORRECTAMENTE") {
             setSuccess(true);
+            setSuccessMessage("Producto agregado exitosamente");
           } else {
             setErrorMessage("Ha ocurrido un error al agregar el producto");
             setHasError(true);
@@ -180,6 +187,16 @@ const AddProduct = ({ rut, onSuccess }) => {
         </FormControl>
         <Quality value={calidad} onChange={(e) => setCalidad(e)} />
       </div>
+      {successMessage && (
+        <Alert severity="success" onClose={() => setSuccessMessage("")}>
+          {successMessage}
+        </Alert>
+      )}
+      {errorMessage && (
+        <Alert severity="error" onClose={() => setErrorMessage("")}>
+          {errorMessage}
+        </Alert>
+      )}
       <div className={styles.buttonsContainer}>
         {loadingInsertProduct ? (
           <LoadingButton
@@ -203,10 +220,6 @@ const AddProduct = ({ rut, onSuccess }) => {
           </Button>
         )}
       </div>
-      {success && (
-        <Alert severity="success">Producto agregado exitosamente</Alert>
-      )}
-      {hasError && <Alert severity="error">{errorMessage} </Alert>}
     </form>
   );
 };
