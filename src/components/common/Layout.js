@@ -17,12 +17,12 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import RenderMenuOptions from "./RenderMenuOptions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import AppBarTitle from "../common/AppBarTitle";
+import AppBarTitle from "./AppBarTitle";
 import { observer } from "mobx-react-lite";
-import { Store } from "../../store/Store";
 import RenderSelectedMenuOptionContent from "./RenderSelectedMenuOptionContent";
 import logoHorizontal from "../../images/logo_h2.png";
+import { useAuth } from "../../hooks/useAuth";
+import { Store } from "../../store/Store";
 
 function Copyright(props) {
   return (

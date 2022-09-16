@@ -1,9 +1,9 @@
 // This is a React Router v6 app
 import { Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import { AuthProvider } from "./AuthProvider";
-import { ProtectedRoute } from "./ProtectedRoute";
+import { AuthProvider } from "./components/common/AuthProvider";
+import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import Login from "./components/common/Login";
+import Home from "./components/common/Home";
 
 const App = () => {
   return (

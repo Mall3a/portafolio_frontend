@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { addProductosProductor } from "../../../api/Apis";
+import { addProductosProductor } from "../../api/Apis";
 import React, { useEffect, useState } from "react";
 import {
   CircularProgress,
@@ -11,8 +11,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import styles from "./AddProduct.module.scss";
-import { mockProducts } from "../../../api/MockData";
-import Quality from "../../common/Quality";
+import { mockProducts } from "../../api/MockData";
+import Quality from "../common/Quality";
 
 const AddProduct = ({ rut }) => {
   const [isError, setIsError] = useState(false);

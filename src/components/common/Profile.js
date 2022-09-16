@@ -1,6 +1,6 @@
 import { FormLabel } from "@mui/material";
 import React from "react";
-import Title from "../common/Title";
+import Title from "./Title";
 import styles from "./Profile.module.scss";
 
 const Profile = ({ user }) => {

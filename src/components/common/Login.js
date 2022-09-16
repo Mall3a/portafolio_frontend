@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { login } from "../api/Apis";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import styles from "./Login.module.scss";
-import Logo from "../images/logo.svg";
+import Logo from "../../images/logo.svg";
 // This is a React Router v6 app
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
+import { login } from "../../api/Apis";
 
 const Login = () => {
   const navigate = useNavigate();

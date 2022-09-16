@@ -1,6 +1,6 @@
 import React from "react";
-import Layout from "../components/HomeContent/Layout";
-import { Store } from "../store/Store";
+import { Store } from "../../store/Store";
+import Layout from "./Layout";
 
 const Home = () => {
   return (

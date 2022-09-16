@@ -4,11 +4,11 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Title from "../../common/Title";
+import Title from "../common/Title";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
-import { getProductosProductor } from "../../../api/Apis";
+import { getProductosProductor } from "../../api/Apis";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Products.module.scss";
@@ -17,7 +17,7 @@ import AddProduct from "./AddProduct";
 import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
-import Quality from "../../common/Quality";
+import Quality from "../common/Quality";
 
 const style = {
   position: "absolute",
