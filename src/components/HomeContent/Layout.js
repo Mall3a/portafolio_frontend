@@ -34,7 +34,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Maipo Grande
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

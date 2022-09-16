@@ -16,7 +16,7 @@ import { Button } from "@mui/material";
 import AddProduct from "./AddProduct";
 import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import { Close } from "@mui/icons-material";
+import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../../common/Quality";
 
 const style = {
@@ -91,6 +91,8 @@ const Products = ({ user }) => {
                   <TableCell align="right">Precio</TableCell>
                   <TableCell align="right">Calidad&nbsp;(1-5)</TableCell>
                   <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
+                  <TableCell align="right">Editar</TableCell>
+                  <TableCell align="right">Eliminar</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -112,6 +114,26 @@ const Products = ({ user }) => {
                       <Quality value={row.calidad} readOnly />
                     </TableCell>
                     <TableCell align="right">{row.cantidad} kg</TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        //onClick={() => editProduct(id)}
+                        style={{ alignSelf: "end", color: "#1976d2" }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        //onClick={() => deleteProduct(id)}
+                        style={{ alignSelf: "end", color: "#d42c2c" }}
+                      >
+                        <DeleteForever />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
