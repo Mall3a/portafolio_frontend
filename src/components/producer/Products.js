@@ -172,7 +172,14 @@ const Products = ({ user }) => {
           </div>
           <AddProduct
             rut={user.rut}
-            onSuccess={(value) => value && getProducerProducts()}
+            onSuccess={(value) => {
+              if (value) {
+                setTimeout(() => {
+                  setToggleModal(false);
+                  getProducerProducts();
+                }, 1000);
+              }
+            }}
           />
         </Box>
       </Modal>
