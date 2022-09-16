@@ -7,11 +7,20 @@ import Logo from "../../images/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { login } from "../../api/Apis";
-import { Alert } from "@mui/material";
+import {
+  Alert,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import LoginIcon from "@mui/icons-material/Login";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Login = () => {
+  let [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
   const { setAuth } = useAuth();
 
@@ -78,15 +87,29 @@ const Login = () => {
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
-        <TextField
-          className={styles.passField}
-          type="password"
-          id="pass"
-          label="Contraseña"
-          variant="outlined"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
-        />
+        <FormControl variant="outlined" className={styles.passField}>
+          <InputLabel htmlFor="outlined-adornment-password">
+            Contraseña
+          </InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            type={showPass ? "text" : "password"}
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPass(!showPass)}
+                  edge="end"
+                >
+                  {showPass ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Contraseña"
+          />
+        </FormControl>
 
         {loading ? (
           <LoadingButton

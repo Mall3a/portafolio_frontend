@@ -10,12 +10,15 @@ import {
   TextField,
   MenuItem,
   Alert,
+  InputAdornment,
+  OutlinedInput,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./AddProduct.module.scss";
 import { mockProducts } from "../../api/MockData";
 import Quality from "../common/Quality";
 import { Save } from "@mui/icons-material";
+import { NumberFormatBase, NumericFormat } from "react-number-format";
 
 const AddProduct = ({ rut, onSuccess }) => {
   const [hasError, setHasError] = useState(false);
@@ -23,7 +26,11 @@ const AddProduct = ({ rut, onSuccess }) => {
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [loadingInsertProduct, setLoadingInsertProduct] = useState(false);
 
-  let [precio, setPrecio] = useState(1);
+  let [precio, setPrecio] = useState({
+    formattedValue: "$1",
+    value: 1,
+    floatValue: 1,
+  });
   let [calidad, setCalidad] = useState(3);
   let [cantidad, setCantidad] = useState(1);
   let [productos, setProductos] = useState([{}]);
@@ -68,7 +75,7 @@ const AddProduct = ({ rut, onSuccess }) => {
       Math.random(1000),
       //TODO: arreglar id autoncrementable
       selectedProductId,
-      precio,
+      precio.value,
       calidad,
       cantidad,
       rut
@@ -96,6 +103,15 @@ const AddProduct = ({ rut, onSuccess }) => {
     setSelectedProductId(e.target.value);
   };
 
+  const format = (numStr) => {
+    if (numStr === "") return "";
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+      maximumFractionDigits: 0,
+    }).format(numStr);
+  };
+
   return loadingProducts ? (
     <Box className={styles.loadingContainer}>
       <CircularProgress />
@@ -119,22 +135,26 @@ const AddProduct = ({ rut, onSuccess }) => {
             })}
           </Select>
         </FormControl>
-        <TextField
-          inputProps={{ min: 1 }}
-          type="number"
+        <NumberFormatBase
+          format={format}
+          value={precio.formattedValue}
+          customInput={TextField}
+          prefix="$"
           label="Precio"
-          variant="outlined"
-          value={precio}
-          onChange={(e) => setPrecio(e.target.value)}
+          onValueChange={(values) => {
+            setPrecio(values);
+          }}
         />
-        <TextField
-          inputProps={{ min: 1 }}
-          type="number"
-          label="Cantidad"
-          variant="outlined"
-          value={cantidad}
-          onChange={(e) => setCantidad(e.target.value)}
-        />
+        <FormControl variant="outlined">
+          <InputLabel>Cantidad</InputLabel>
+          <OutlinedInput
+            type="number"
+            value={cantidad}
+            onChange={(e) => setCantidad(e.target.value)}
+            endAdornment={<InputAdornment position="end">kg</InputAdornment>}
+            label="Cantidad"
+          />
+        </FormControl>
         <Quality value={calidad} onChange={(e) => setCalidad(e)} />
       </div>
       <div className={styles.buttonsContainer}>
