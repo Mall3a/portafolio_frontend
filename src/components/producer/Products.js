@@ -7,7 +7,6 @@ import TableRow from "@mui/material/TableRow";
 import Title from "../common/Title";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-
 import { getProductosProductor } from "../../api/Apis";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -18,6 +17,10 @@ import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../common/Quality";
+import ManzanaIcon from "../../images/manzana.svg";
+import PinaIcon from "../../images/pina.svg";
+import PlatanoIcon from "../../images/platano.svg";
+import ZanahoriaIcon from "../../images/zanahoria.svg";
 
 const style = {
   position: "absolute",
@@ -87,12 +90,13 @@ const Products = ({ user }) => {
             <Table size="large">
               <TableHead>
                 <TableRow>
-                  <TableCell>Nombre Producto</TableCell>
+                  <TableCell align="center">Imagen</TableCell>
+                  <TableCell align="right">Nombre</TableCell>
                   <TableCell align="right">Precio</TableCell>
-                  <TableCell align="right">Calidad&nbsp;(1-5)</TableCell>
+                  <TableCell align="center">Calidad</TableCell>
                   <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
-                  <TableCell align="right">Editar</TableCell>
-                  <TableCell align="right">Eliminar</TableCell>
+                  <TableCell align="right"></TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -101,7 +105,33 @@ const Products = ({ user }) => {
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" align="center">
+                      {row.nombre_producto === "Manzana" && (
+                        <img
+                          src={ManzanaIcon}
+                          style={{ width: "50px", height: "50px" }}
+                        ></img>
+                      )}
+                      {row.nombre_producto === "Zanahoria" && (
+                        <img
+                          src={ZanahoriaIcon}
+                          style={{ width: "50px", height: "50px" }}
+                        ></img>
+                      )}
+                      {row.nombre_producto === "Platano" && (
+                        <img
+                          src={PlatanoIcon}
+                          style={{ width: "50px", height: "50px" }}
+                        ></img>
+                      )}
+                      {row.nombre_producto === "Pina" && (
+                        <img
+                          src={PinaIcon}
+                          style={{ width: "50px", height: "50px" }}
+                        ></img>
+                      )}
+                    </TableCell>
+                    <TableCell component="th" scope="row" align="right">
                       {row.nombre_producto}
                     </TableCell>
                     <TableCell align="right">

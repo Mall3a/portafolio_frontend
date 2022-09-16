@@ -64,7 +64,7 @@ const AddProduct = ({ rut }) => {
     const data = response.data;
     if (response.status === 200) {
       if (data.out_mensaje_salida === "PRODUCTO CREADO CORRECTAMENTE") {
-        //TODO: cerrar modal y mostrar mensaje exito
+        //TODO: mostrar mensaje exito cerrar modal y actualizar tabla
       } else {
         setIsError(true);
       }
