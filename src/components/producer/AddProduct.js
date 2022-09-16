@@ -21,7 +21,7 @@ import { Save } from "@mui/icons-material";
 import { NumberFormatBase } from "react-number-format";
 
 const AddProduct = ({ rut, onSuccess }) => {
-  /** Formato precio:
+  /** Formato variable precio:
    * 
     formattedValue: "$1",
     value: 1,
@@ -73,7 +73,7 @@ const AddProduct = ({ rut, onSuccess }) => {
     if (success) {
       onSuccess(success);
     }
-  }, [success]);
+  }, [onSuccess, success]);
 
   const handleAgregarProducto = async (e) => {
     e.preventDefault();
@@ -174,7 +174,7 @@ const AddProduct = ({ rut, onSuccess }) => {
             value={cantidad}
             onChange={(e) => setCantidad(e.target.value)}
             endAdornment={<InputAdornment position="end">kg</InputAdornment>}
-            inputProps={{ min: 1, max: 999 }}
+            //inputProps={{ min: 1, max: 999 }}
             label="Cantidad"
           />
         </FormControl>
@@ -197,6 +197,7 @@ const AddProduct = ({ rut, onSuccess }) => {
             variant="contained"
             color="primary"
             className={styles.addProductButton}
+            disabled={!precio.value || !cantidad}
           >
             Agregar
           </Button>

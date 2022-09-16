@@ -128,6 +128,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={styles.loginButton}
+            disabled={!pass || !user}
           >
             Inciar Sesión
           </Button>
