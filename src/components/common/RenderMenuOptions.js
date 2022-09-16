@@ -13,7 +13,10 @@ import { observer } from "mobx-react-lite";
 const RenderMenuOptions = observer(({ store, user }) => {
   const producerMenu = (
     <React.Fragment>
-      <ListItemButton onClick={() => store.setSelectedMenuOption("Productos")}>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Productos")}
+        selected={store.selectedMenuOption === "Productos"}
+      >
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
@@ -23,13 +26,19 @@ const RenderMenuOptions = observer(({ store, user }) => {
   );
   const driverMenu = (
     <React.Fragment>
-      <ListItemButton onClick={() => store.setSelectedMenuOption("Subastas")}>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Subastas")}
+        selected={store.selectedMenuOption === "Subastas"}
+      >
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Subastas" />
       </ListItemButton>
-      <ListItemButton onClick={() => store.setSelectedMenuOption("Pedidos")}>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Pedidos")}
+        selected={store.selectedMenuOption === "Pedidos"}
+      >
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
@@ -40,7 +49,10 @@ const RenderMenuOptions = observer(({ store, user }) => {
 
   const consultantMenu = (
     <React.Fragment>
-      <ListItemButton onClick={() => store.setSelectedMenuOption("Reportes")}>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Reportes")}
+        selected={store.selectedMenuOption === "Reportes"}
+      >
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
@@ -50,7 +62,10 @@ const RenderMenuOptions = observer(({ store, user }) => {
   );
   const commonMenu = (
     <React.Fragment>
-      <ListItemButton onClick={() => store.setSelectedMenuOption("Perfil")}>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Perfil")}
+        selected={store.selectedMenuOption === "Perfil"}
+      >
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
