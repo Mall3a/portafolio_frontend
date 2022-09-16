@@ -9,14 +9,20 @@ import {
   Select,
   TextField,
   MenuItem,
+  Alert,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import styles from "./AddProduct.module.scss";
 import { mockProducts } from "../../api/MockData";
 import Quality from "../common/Quality";
+import { Save } from "@mui/icons-material";
 
-const AddProduct = ({ rut }) => {
-  const [isError, setIsError] = useState(false);
-  const [loading, setLoading] = useState(false);
+const AddProduct = ({ rut, onSuccess }) => {
+  const [hasError, setHasError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [loadingInsertProduct, setLoadingInsertProduct] = useState(false);
+
   let [precio, setPrecio] = useState(1);
   let [calidad, setCalidad] = useState(3);
   let [cantidad, setCantidad] = useState(1);
@@ -24,9 +30,14 @@ const AddProduct = ({ rut }) => {
   let [selectedProductId, setSelectedProductId] = useState(1);
 
   useEffect(() => {
-    //TODO: borrar variables al abrir modal
-    setIsError(false);
+    setHasError(false);
+    setSuccess(false);
     getProducts();
+
+    return () => {
+      setHasError(false);
+      setSuccess(false);
+    };
   }, []);
 
   const getProducts = async () => {
@@ -39,22 +50,23 @@ const AddProduct = ({ rut }) => {
     if (response.status === 200) {
       //llenar select
       setProductos(response.data.productos);
-      setLoading(false);
+      setLoadingProducts(false);
     } else {
       /** TODO: poner mensaje personalizado error de servicio */
-      setIsError(true);
-      setLoading(false);
+      setHasError(true);
+      setLoadingProducts(false);
     }
   };
 
   const handleAgregarProducto = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setIsError(false);
+    setLoadingInsertProduct(true);
+    setHasError(false);
+    setSuccess(false);
 
     const response = await addProductosProductor(
       Math.random(1000),
-      //TODO arreglar id autoncrementable
+      //TODO: arreglar id autoncrementable
       selectedProductId,
       precio,
       calidad,
@@ -64,15 +76,18 @@ const AddProduct = ({ rut }) => {
     const data = response.data;
     if (response.status === 200) {
       if (data.out_mensaje_salida === "PRODUCTO CREADO CORRECTAMENTE") {
-        //TODO: mostrar mensaje exito cerrar modal y actualizar tabla
+        setSuccess(true);
+        //TODO: actualizar tabla y cerrar modal
+        onSuccess(success);
       } else {
-        setIsError(true);
+        /** TODO: poner mensaje personalizado error al insertar */
+        setHasError(true);
       }
-      setLoading(false);
+      setLoadingInsertProduct(false);
     } else {
       /** TODO: poner mensaje personalizado error de servicio */
-      setIsError(true);
-      setLoading(false);
+      setHasError(true);
+      setLoadingInsertProduct(false);
     }
   };
 
@@ -81,7 +96,7 @@ const AddProduct = ({ rut }) => {
     setSelectedProductId(e.target.value);
   };
 
-  return loading ? (
+  return loadingProducts ? (
     <Box className={styles.loadingContainer}>
       <CircularProgress />
     </Box>
@@ -89,10 +104,8 @@ const AddProduct = ({ rut }) => {
     <form onSubmit={handleAgregarProducto}>
       <div className={styles.formContainer}>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Productos</InputLabel>
+          <InputLabel>Productos</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
             value={selectedProductId}
             label="Productos"
             onChange={handleChange}
@@ -114,7 +127,6 @@ const AddProduct = ({ rut }) => {
           value={precio}
           onChange={(e) => setPrecio(e.target.value)}
         />
-        <Quality value={calidad} onChange={(e) => setCalidad(e)} />
         <TextField
           inputProps={{ min: 1 }}
           type="number"
@@ -123,20 +135,39 @@ const AddProduct = ({ rut }) => {
           value={cantidad}
           onChange={(e) => setCantidad(e.target.value)}
         />
-        {isError && (
-          <div className={styles.errorMessage}>Error al agregar producto</div>
-        )}
+        <Quality value={calidad} onChange={(e) => setCalidad(e)} />
       </div>
       <div className={styles.buttonsContainer}>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className={styles.addProductButton}
-        >
-          Agregar
-        </Button>
+        {loadingInsertProduct ? (
+          <LoadingButton
+            color="secondary"
+            loading={loadingInsertProduct}
+            loadingPosition="start"
+            variant="contained"
+            startIcon={<Save />}
+          >
+            Agregar
+          </LoadingButton>
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={styles.addProductButton}
+          >
+            Agregar
+          </Button>
+        )}
       </div>
+      {success && (
+        <Alert severity="success">Producto agregado exitosamente</Alert>
+      )}
+
+      {hasError && (
+        <Alert severity="error">
+          Ha ocurrido un error al agregar el producto
+        </Alert>
+      )}
     </form>
   );
 };

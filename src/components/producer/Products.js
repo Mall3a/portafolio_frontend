@@ -11,16 +11,13 @@ import { getProductosProductor } from "../../api/Apis";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Products.module.scss";
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import AddProduct from "./AddProduct";
 import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../common/Quality";
-import ManzanaIcon from "../../images/manzana.svg";
-import PinaIcon from "../../images/pina.svg";
-import PlatanoIcon from "../../images/platano.svg";
-import ZanahoriaIcon from "../../images/zanahoria.svg";
+import ProductImage from "./ProductImage";
 
 const style = {
   position: "absolute",
@@ -37,7 +34,7 @@ const style = {
 };
 
 const Products = ({ user }) => {
-  const [isError, setIsError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
   let [productos, setProductos] = useState([{}]);
   let [toggleModal, setToggleModal] = useState(false);
@@ -48,7 +45,7 @@ const Products = ({ user }) => {
 
   const getProducerProducts = async () => {
     setLoading(true);
-    setIsError(false);
+    setHasError(false);
 
     const response = await getProductosProductor(user.rut);
     const data = response.data;
@@ -57,16 +54,16 @@ const Products = ({ user }) => {
       if (data.productos.length > 0) {
         setProductos(data.productos);
       } else {
-        /** TODO: poner mensaje personalizado no tiene productos */
-        setIsError(true);
+        setHasError(false);
       }
       setLoading(false);
     } else {
-      /** TODO: poner mensaje personalizado error de servicio */
-      setIsError(true);
+      setHasError(true);
       setLoading(false);
     }
   };
+
+  //TODO: recuperar imagen svg de base de datos o poner en archivo
 
   return loading ? (
     <Box className={styles.loadingContainer}>
@@ -75,7 +72,7 @@ const Products = ({ user }) => {
   ) : (
     <>
       <Grid item xs={12}>
-        <div className={styles.container}>
+        <div className={styles.buttonContainer}>
           <Button
             variant="contained"
             color="primary"
@@ -84,92 +81,79 @@ const Products = ({ user }) => {
             Agregar
           </Button>
         </div>
-        <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-          <React.Fragment>
-            <Title>Productos</Title>
-            <Table size="large">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Imagen</TableCell>
-                  <TableCell align="right">Nombre</TableCell>
-                  <TableCell align="right">Precio</TableCell>
-                  <TableCell align="center">Calidad</TableCell>
-                  <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
-                  <TableCell align="right"></TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {productos.map((row, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row" align="center">
-                      {row.nombre_producto === "Manzana" && (
-                        <img
-                          src={ManzanaIcon}
-                          style={{ width: "50px", height: "50px" }}
-                        ></img>
-                      )}
-                      {row.nombre_producto === "Zanahoria" && (
-                        <img
-                          src={ZanahoriaIcon}
-                          style={{ width: "50px", height: "50px" }}
-                        ></img>
-                      )}
-                      {row.nombre_producto === "Platano" && (
-                        <img
-                          src={PlatanoIcon}
-                          style={{ width: "50px", height: "50px" }}
-                        ></img>
-                      )}
-                      {row.nombre_producto === "Pina" && (
-                        <img
-                          src={PinaIcon}
-                          style={{ width: "50px", height: "50px" }}
-                        ></img>
-                      )}
-                    </TableCell>
-                    <TableCell component="th" scope="row" align="right">
-                      {row.nombre_producto}
-                    </TableCell>
-                    <TableCell align="right">
-                      {Intl.NumberFormat("es-CL", {
-                        currency: "CLP",
-                        style: "currency",
-                      }).format(row.precio)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Quality value={row.calidad} readOnly />
-                    </TableCell>
-                    <TableCell align="right">{row.cantidad} kg</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        edge="start"
-                        color="inherit"
-                        //onClick={() => editProduct(id)}
-                        style={{ alignSelf: "end", color: "#1976d2" }}
-                      >
-                        <Edit />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        edge="start"
-                        color="inherit"
-                        //onClick={() => deleteProduct(id)}
-                        style={{ alignSelf: "end", color: "#d42c2c" }}
-                      >
-                        <DeleteForever />
-                      </IconButton>
-                    </TableCell>
+        {productos.length > 0 ? (
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+            <React.Fragment>
+              <Title>Productos</Title>
+              <Table size="large">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">Imagen</TableCell>
+                    <TableCell align="right">Nombre</TableCell>
+                    <TableCell align="right">Precio</TableCell>
+                    <TableCell align="center">Calidad</TableCell>
+                    <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
+                    <TableCell align="right"></TableCell>
+                    <TableCell align="right"></TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </React.Fragment>
-        </Paper>
+                </TableHead>
+                <TableBody>
+                  {productos.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row" align="center">
+                        <ProductImage productName={row.nombre_producto} />
+                      </TableCell>
+                      <TableCell component="th" scope="row" align="right">
+                        {row.nombre_producto}
+                      </TableCell>
+                      <TableCell align="right">
+                        {Intl.NumberFormat("es-CL", {
+                          currency: "CLP",
+                          style: "currency",
+                        }).format(row.precio)}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Quality value={row.calidad} readOnly />
+                      </TableCell>
+                      <TableCell align="right">{row.cantidad} kg</TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          //onClick={() => editProduct(id)}
+                          style={{ alignSelf: "end", color: "#1976d2" }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          //onClick={() => deleteProduct(id)}
+                          style={{ alignSelf: "end", color: "#d42c2c" }}
+                        >
+                          <DeleteForever />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </React.Fragment>
+          </Paper>
+        ) : hasError ? (
+          <Alert severity="error">
+            Ha ocurrido un error al intentar obtener la lista de productos
+          </Alert>
+        ) : (
+          <Alert severity="info">
+            Agregue un producto para visualizarlo en ésta área
+          </Alert>
+        )}
       </Grid>
       <Modal open={toggleModal} disableEscapeKeyDown>
         <Box sx={style}>
@@ -178,13 +162,18 @@ const Products = ({ user }) => {
             <IconButton
               edge="start"
               color="inherit"
-              onClick={() => setToggleModal(false)}
+              onClick={() => {
+                setToggleModal(false);
+              }}
               style={{ alignSelf: "end" }}
             >
               <Close />
             </IconButton>
           </div>
-          <AddProduct rut={user.rut} />
+          <AddProduct
+            rut={user.rut}
+            onSuccess={(value) => value && getProducerProducts()}
+          />
         </Box>
       </Modal>
     </>

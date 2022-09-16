@@ -5,19 +5,20 @@ import styles from "./Login.module.scss";
 import Logo from "../../images/logo.svg";
 // This is a React Router v6 app
 import { useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import { useAuth } from "../../hooks/useAuth";
 import { login } from "../../api/Apis";
+import { Alert } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import LoginIcon from "@mui/icons-material/Login";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
 
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
 
-  const [isError, setIsError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
   let [errorMessage, setErrorMessage] = useState("");
 
@@ -25,7 +26,7 @@ const Login = () => {
     //Prevent page reload
     e.preventDefault();
     setLoading(true);
-    setIsError(false);
+    setHasError(false);
     if (user && pass) {
       const response = await login(user, pass);
       const data = response.data;
@@ -45,31 +46,27 @@ const Login = () => {
               "Usuario administrador debe ingresar por la aplicación de escritorio"
             );
 
-            setIsError(true);
+            setHasError(true);
             setLoading(false);
           }
         } else {
-          setErrorMessage("Usario o contraseña incorrecta");
-          setIsError(true);
+          setErrorMessage("Usuario o contraseña incorrecta");
+          setHasError(true);
           setLoading(false);
         }
       } else {
         setErrorMessage("Servicio no disponible");
-        setIsError(true);
+        setHasError(true);
         setLoading(false);
       }
     } else {
-      setIsError(true);
+      setHasError(true);
       setErrorMessage("Debe ingresar usuario y contraseña");
       setLoading(false);
     }
   };
 
-  return loading ? (
-    <Box className={styles.loadingContainer}>
-      <CircularProgress />
-    </Box>
-  ) : (
+  return (
     <div className={styles.container}>
       <img src={Logo} alt="Maipo Grande Logo" />
       <form className={styles.loginForm} onSubmit={handleSubmit}>
@@ -90,15 +87,29 @@ const Login = () => {
           value={pass}
           onChange={(e) => setPass(e.target.value)}
         />
-        {isError && <div className={styles.errorMessage}>{errorMessage}</div>}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className={styles.loginButton}
-        >
-          Inciar Sesión
-        </Button>
+
+        {loading ? (
+          <LoadingButton
+            color="secondary"
+            loading={loading}
+            loadingPosition="start"
+            variant="contained"
+            startIcon={<LoginIcon />}
+            className={styles.loginButton}
+          >
+            Inciar Sesión
+          </LoadingButton>
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={styles.loginButton}
+          >
+            Inciar Sesión
+          </Button>
+        )}
+        {hasError && <Alert severity="error">{errorMessage}</Alert>}
       </form>
     </div>
   );
