@@ -55,6 +55,7 @@ const Products = ({ user }) => {
       if (data.productos.length > 0) {
         setProductos(data.productos);
       } else {
+        setProductos(data.productos);
         setHasError(false);
       }
       setLoading(false);
