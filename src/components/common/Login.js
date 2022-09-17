@@ -99,6 +99,7 @@ const Login = () => {
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
+                  style={{ marginRight: "-5px" }}
                   aria-label="toggle password visibility"
                   onClick={() => setShowPass(!showPass)}
                   edge="end"
