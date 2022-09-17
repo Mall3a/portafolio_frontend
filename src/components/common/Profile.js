@@ -2,12 +2,24 @@ import { Avatar, FormLabel } from "@mui/material";
 import React from "react";
 import Title from "./Title";
 import styles from "./Profile.module.scss";
+import ProducerImg from "../../images/producer2.png";
+import DriverImg from "../../images/driver3.jpg";
 
 const Profile = ({ user }) => {
+  const setProfileImg = () => {
+    let src = null;
+    if (user.nombre_rol === "Productor") {
+      src = ProducerImg;
+    }
+    if (user.nombre_rol === "Transportista") {
+      src = DriverImg;
+    }
+    return src;
+  };
   return (
     <div className={styles.container}>
       <div className={styles.avatarContainer}>
-        <Avatar sx={{ width: 250, height: 250 }}></Avatar>
+        <Avatar src={setProfileImg()} sx={{ width: 250, height: 250 }}></Avatar>
       </div>
       <div className={styles.infoContainer}>
         <FormLabel>
