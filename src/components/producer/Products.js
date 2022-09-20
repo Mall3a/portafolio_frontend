@@ -14,10 +14,10 @@ import styles from "./Products.module.scss";
 import { Alert, Button } from "@mui/material";
 import AddProduct from "./AddProduct";
 import { IconButton } from "@mui/material";
-import Modal from "@mui/material/Modal";
-import { Close, DeleteForever, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../common/Quality";
 import ProductImage from "./ProductImage";
+import DeleteProduct from "./DeleteProduct";
 
 const style = {
   position: "absolute",
@@ -39,6 +39,7 @@ const Products = ({ user }) => {
   let [productos, setProductos] = useState([{}]);
   let [toggleAddProductModal, setToggleAddProductModal] = useState(false);
   let [toggleDeleteProductModal, setToggleDeleteProductModal] = useState(false);
+  let [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     getProducerProducts();
@@ -65,6 +66,15 @@ const Products = ({ user }) => {
     }
   };
 
+  const handleDeleteProduct = (id) => {
+    setToggleDeleteProductModal(true);
+    setSelectedId(id);
+  };
+
+  const handleAddProduct = () => {
+    setToggleAddProductModal(true);
+  };
+
   return (
     <>
       {loading ? (
@@ -77,7 +87,7 @@ const Products = ({ user }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setToggleAddProductModal(true)}
+              onClick={handleAddProduct}
             >
               Agregar
             </Button>
@@ -136,9 +146,7 @@ const Products = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            //TODO: recibir y pasar row.id de producto para eliminarlo
-                            //onClick={() => deleteProduct(row.id)}
-                            onClick={() => setToggleDeleteProductModal(true)}
+                            onClick={() => handleDeleteProduct(row.id)}
                             style={{ alignSelf: "end", color: "#d42c2c" }}
                           >
                             <DeleteForever />
@@ -161,63 +169,22 @@ const Products = ({ user }) => {
           )}
         </Grid>
       )}
-      <Modal open={toggleAddProductModal} disableEscapeKeyDown>
-        <Box sx={style}>
-          <div className={styles.modalTitleContainer}>
-            <Title>Agregar Producto</Title>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => {
-                setToggleAddProductModal(false);
-              }}
-              style={{ alignSelf: "end" }}
-            >
-              <Close />
-            </IconButton>
-          </div>
-          <AddProduct
-            rut={user.rut}
-            onSuccess={() => {
-              getProducerProducts();
-            }}
-          />
-        </Box>
-      </Modal>
-      <Modal open={toggleDeleteProductModal} disableEscapeKeyDown>
-        <Box sx={style}>
-          <div className={styles.modalTitleContainer}>
-            <Title>Eliminar Producto</Title>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => {
-                setToggleDeleteProductModal(false);
-              }}
-              style={{ alignSelf: "end" }}
-            >
-              <Close />
-            </IconButton>
-          </div>
-          <div className={styles.deleteContainer}>
-            <label> ¿Está seguro que desea eliminar el producto?</label>{" "}
-            <div className={styles.modalButtonsContainer}>
-              <Button
-                color="primary"
-                variant="outlined"
-                onClick={() => {
-                  setToggleDeleteProductModal(false);
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button color="error" variant="contained">
-                Eliminar
-              </Button>
-            </div>
-          </div>
-        </Box>
-      </Modal>
+      <AddProduct
+        rut={user.rut}
+        onSuccess={() => {
+          getProducerProducts();
+        }}
+        toggleAddProductModal={toggleAddProductModal}
+        setToggleAddProductModal={setToggleAddProductModal}
+      />
+      <DeleteProduct
+        onSuccess={() => {
+          getProducerProducts();
+        }}
+        id={selectedId && selectedId}
+        toggleDeleteProductModal={toggleDeleteProductModal}
+        setToggleDeleteProductModal={setToggleDeleteProductModal}
+      />
     </>
   );
 };

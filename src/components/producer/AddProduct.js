@@ -12,6 +12,7 @@ import {
   Alert,
   InputAdornment,
   OutlinedInput,
+  IconButton,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import styles from "./AddProduct.module.scss";
@@ -19,8 +20,30 @@ import { mockProducts } from "../../api/MockData";
 import Quality from "../common/Quality";
 import { Save } from "@mui/icons-material";
 import { NumberFormatBase } from "react-number-format";
+import Modal from "@mui/material/Modal";
+import { Close } from "@mui/icons-material";
+import Title from "../common/Title";
 
-const AddProduct = ({ rut, onSuccess }) => {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+
+const AddProduct = ({
+  rut,
+  onSuccess,
+  toggleAddProductModal,
+  setToggleAddProductModal,
+}) => {
   /** Formato variable precio:
    * 
     formattedValue: "$1",
@@ -91,8 +114,6 @@ const AddProduct = ({ rut, onSuccess }) => {
     if (precio && cantidad) {
       if (precio.value >= 1 && cantidad >= 1) {
         const response = await addProductosProductor(
-          Math.random(1000),
-          //TODO: arreglar id autoncrementable
           selectedProductId,
           precio.value,
           calidad,
@@ -140,87 +161,109 @@ const AddProduct = ({ rut, onSuccess }) => {
     }).format(numStr);
   };
 
-  return loadingProducts ? (
-    <Box className={styles.loadingContainer}>
-      <CircularProgress />
-    </Box>
-  ) : (
-    <form onSubmit={handleAgregarProducto}>
-      <div className={styles.formContainer}>
-        <FormControl fullWidth>
-          <InputLabel>Productos</InputLabel>
-          <Select
-            value={selectedProductId}
-            label="Productos"
-            onChange={handleChange}
+  return (
+    <Modal open={toggleAddProductModal} disableEscapeKeyDown>
+      <Box sx={style}>
+        <div className={styles.modalTitleContainer}>
+          <Title>Agregar Producto</Title>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={() => {
+              setToggleAddProductModal(false);
+            }}
+            style={{ alignSelf: "end" }}
           >
-            {productos.map((producto, index) => {
-              return (
-                <MenuItem key={index} value={producto.id}>
-                  {producto.nombre}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-        <NumberFormatBase
-          style={{ width: "200px" }}
-          format={format}
-          value={precio.formattedValue}
-          customInput={TextField}
-          prefix="$"
-          label="Precio"
-          onValueChange={(values) => {
-            setPrecio(values);
-          }}
-        />
-        <FormControl variant="outlined" style={{ width: "200px" }}>
-          <InputLabel>Cantidad</InputLabel>
-          <OutlinedInput
-            type="number"
-            value={cantidad}
-            onChange={(e) => setCantidad(e.target.value)}
-            endAdornment={<InputAdornment position="end">kg</InputAdornment>}
-            //inputProps={{ min: 1, max: 999 }}
-            label="Cantidad"
-          />
-        </FormControl>
-        <Quality value={calidad} onChange={(e) => setCalidad(e)} />
-      </div>
-      {successMessage && (
-        <Alert severity="success" onClose={() => setSuccessMessage("")}>
-          {successMessage}
-        </Alert>
-      )}
-      {errorMessage && (
-        <Alert severity="error" onClose={() => setErrorMessage("")}>
-          {errorMessage}
-        </Alert>
-      )}
-      <div className={styles.buttonsContainer}>
-        {loadingInsertProduct ? (
-          <LoadingButton
-            color="secondary"
-            loading={loadingInsertProduct}
-            loadingPosition="start"
-            variant="contained"
-            startIcon={<Save />}
-          >
-            Agregar
-          </LoadingButton>
+            <Close />
+          </IconButton>
+        </div>
+
+        {loadingProducts ? (
+          <Box className={styles.loadingContainer}>
+            <CircularProgress />
+          </Box>
         ) : (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={styles.addProductButton}
-            disabled={!precio.value || !cantidad}
-          >
-            Agregar
-          </Button>
+          <form onSubmit={handleAgregarProducto}>
+            <div className={styles.formContainer}>
+              <FormControl fullWidth>
+                <InputLabel>Productos</InputLabel>
+                <Select
+                  value={selectedProductId}
+                  label="Productos"
+                  onChange={handleChange}
+                >
+                  {productos.map((producto, index) => {
+                    return (
+                      <MenuItem key={index} value={producto.id}>
+                        {producto.nombre}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <NumberFormatBase
+                style={{ width: "200px" }}
+                format={format}
+                value={precio.formattedValue}
+                customInput={TextField}
+                prefix="$"
+                label="Precio"
+                onValueChange={(values) => {
+                  setPrecio(values);
+                }}
+              />
+              <FormControl variant="outlined" style={{ width: "200px" }}>
+                <InputLabel>Cantidad</InputLabel>
+                <OutlinedInput
+                  type="number"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">kg</InputAdornment>
+                  }
+                  //inputProps={{ min: 1, max: 999 }}
+                  label="Cantidad"
+                />
+              </FormControl>
+              <Quality value={calidad} onChange={(e) => setCalidad(e)} />
+            </div>
+            {successMessage && (
+              <Alert severity="success" onClose={() => setSuccessMessage("")}>
+                {successMessage}
+              </Alert>
+            )}
+            {hasError && errorMessage && (
+              <Alert severity="error" onClose={() => setErrorMessage("")}>
+                {errorMessage}
+              </Alert>
+            )}
+            <div className={styles.buttonsContainer}>
+              {loadingInsertProduct ? (
+                <LoadingButton
+                  color="secondary"
+                  loading={loadingInsertProduct}
+                  loadingPosition="start"
+                  variant="contained"
+                  startIcon={<Save />}
+                >
+                  Agregar
+                </LoadingButton>
+              ) : (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={styles.addProductButton}
+                  disabled={!precio.value || !cantidad}
+                >
+                  Agregar
+                </Button>
+              )}
+            </div>
+          </form>
         )}
-      </div>
-    </form>
+      </Box>
+    </Modal>
   );
 };
 
