@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { addProductosProductor } from "../../api/producerApis.js";
+import { addProductoProductor } from "../../api/producerApis.js";
 import React, { useEffect, useState } from "react";
 import {
   CircularProgress,
@@ -113,7 +113,7 @@ const AddProduct = ({
 
     if (precio && cantidad) {
       if (precio.value >= 1 && cantidad >= 1) {
-        const response = await addProductosProductor(
+        const response = await addProductoProductor(
           selectedProductId,
           precio.value,
           calidad,
@@ -160,6 +160,13 @@ const AddProduct = ({
       maximumFractionDigits: 0,
     }).format(numStr);
   };
+  const handleCloseModal = () => {
+    setHasError(false);
+    setSuccess(false);
+    setErrorMessage("");
+    setSuccessMessage("");
+    setToggleAddProductModal(false);
+  };
 
   return (
     <Modal open={toggleAddProductModal} disableEscapeKeyDown>
@@ -169,9 +176,7 @@ const AddProduct = ({
           <IconButton
             edge="start"
             color="inherit"
-            onClick={() => {
-              setToggleAddProductModal(false);
-            }}
+            onClick={handleCloseModal}
             style={{ alignSelf: "end" }}
           >
             <Close />

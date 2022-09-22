@@ -13,7 +13,7 @@ export const getProductosProductor = async (id) => {
   });
 };
 
-export const addProductosProductor = async (
+export const addProductoProductor = async (
   idProducto,
   precio,
   calidad,
@@ -29,7 +29,7 @@ export const addProductosProductor = async (
   });
 };
 
-export const updateProductosProductor = async (
+export const updateProductoProductor = async (
   idProductoProductor,
   precio,
   calidad,
@@ -43,7 +43,7 @@ export const updateProductosProductor = async (
   });
 };
 
-export const deleteProductosProductor = async (
+export const deleteProductoProductor = async (
   idProductoProductor
 ) => {
   return await axios.post(API_URL + "sp_delete_producto_productor/", {

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import Title from "../common/Title";
 import Box from "@mui/material/Box";
 import styles from "./Products.module.scss";
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import { IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import { Close } from "@mui/icons-material";
+import { Close, Save } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
+import { deleteProductoProductor } from "../../api/producerApis";
 
 const style = {
   position: "absolute",
@@ -62,10 +64,10 @@ const DeleteProduct = ({
     setErrorMessage("");
     setSuccessMessage("");
 
-    /*  const response = await deleteProduct(id);
+    const response = await deleteProductoProductor(id);
     const data = response.data;
     if (response.status === 200) {
-      if (data.out_mensaje_salida === "PRODUCTO ELIMINADO CORRECTAMENTE") {
+      if (data.out_mensaje_salida.includes("ELIMINADO")) {
         setSuccess(true);
         setSuccessMessage("Producto eliminado exitosamente");
       } else {
@@ -77,8 +79,15 @@ const DeleteProduct = ({
       setHasError(true);
       setLoading(false);
       setErrorMessage("El servicio para eliminar productos ha fallado");
-    } */
-    // setToggleDeleteProductModal(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setHasError(false);
+    setSuccess(false);
+    setErrorMessage("");
+    setSuccessMessage("");
+    setToggleDeleteProductModal(false);
   };
 
   return (
@@ -89,33 +98,50 @@ const DeleteProduct = ({
           <IconButton
             edge="start"
             color="inherit"
-            onClick={() => {
-              setToggleDeleteProductModal(false);
-            }}
+            onClick={handleCloseModal}
             style={{ alignSelf: "end" }}
           >
             <Close />
           </IconButton>
         </div>
         <div className={styles.deleteContainer}>
-          <label> ¿Está seguro que desea eliminar el producto?</label>{" "}
+          <label> ¿Está seguro que desea eliminar el producto?</label>
+          {successMessage && <Alert severity="success">{successMessage}</Alert>}
+          {hasError && errorMessage && (
+            <Alert severity="error" onClose={() => setErrorMessage("")}>
+              {errorMessage}
+            </Alert>
+          )}
           <div className={styles.modalButtonsContainer}>
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => {
-                setToggleDeleteProductModal(false);
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              color="error"
-              variant="contained"
-              onClick={handleOnClickDelete}
-            >
-              Eliminar
-            </Button>
+            {loading ? (
+              <LoadingButton
+                color="secondary"
+                loading={loading}
+                loadingPosition="start"
+                variant="contained"
+                startIcon={<Save />}
+              >
+                Eliminar
+              </LoadingButton>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleCloseModal}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  color="error"
+                  variant="contained"
+                  disabled={successMessage !== ""}
+                  onClick={handleOnClickDelete}
+                >
+                  Eliminar
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </Box>
