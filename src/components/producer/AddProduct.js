@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { addProductoProductor } from "../../api/producerApis.js";
+import { addProductoProductor, getProductos } from "../../api/producerApis.js";
 import React, { useEffect, useState } from "react";
 import {
   CircularProgress,
@@ -79,15 +79,14 @@ const AddProduct = ({
   }, []);
 
   const getProducts = async () => {
-    //get productos
-    //TODO: obtener productos de servicio
-    const response = mockProducts;
+    setLoadingProducts(true);
+    setHasError(false);
+    setErrorMessage("");
 
-    //const response = await getProductos();
-    //const data = response.data;
+    const response = await getProductos();
+    const data = response.data;
     if (response.status === 200) {
-      //llenar select
-      setProductos(response.data.productos);
+      setProductos(data.productos);
       setLoadingProducts(false);
     } else {
       setHasError(true);
@@ -167,6 +166,7 @@ const AddProduct = ({
     setSuccessMessage("");
     setPrecio({ formattedValue: "", value: null, floatValue: null });
     setCantidad(null);
+    setCalidad(3);
     setToggleAddProductModal(false);
   };
 
@@ -202,7 +202,7 @@ const AddProduct = ({
                   {productos.map((producto, index) => {
                     return (
                       <MenuItem key={index} value={producto.id}>
-                        {producto.nombre}
+                        {producto.nombre_producto}
                       </MenuItem>
                     );
                   })}
@@ -261,7 +261,11 @@ const AddProduct = ({
                   variant="contained"
                   color="primary"
                   className={styles.addProductButton}
-                  disabled={!precio.value || !cantidad}
+                  disabled={
+                    !precio.value ||
+                    !cantidad ||
+                    errorMessage === "Error al obtener productos del sistema"
+                  }
                 >
                   Agregar
                 </Button>
