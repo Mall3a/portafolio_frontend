@@ -4,6 +4,7 @@ import Title from "./Title";
 import styles from "./Profile.module.scss";
 import ProducerImg from "../../images/producer2.png";
 import DriverImg from "../../images/driver3.jpg";
+import ConsultantImg from "../../images/consultant.png";
 
 const Profile = ({ user }) => {
   const setProfileImg = () => {
@@ -13,6 +14,9 @@ const Profile = ({ user }) => {
     }
     if (user.nombre_rol === "Transportista") {
       src = DriverImg;
+    }
+    if (user.nombre_rol === "Consultor") {
+      src = ConsultantImg;
     }
     return src;
   };

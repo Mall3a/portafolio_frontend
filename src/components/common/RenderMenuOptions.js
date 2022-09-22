@@ -9,8 +9,39 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import Divider from "@mui/material/Divider";
 import { observer } from "mobx-react-lite";
+import {
+  AccountCircle,
+  CarRental,
+  DirectionsBus,
+  RequestPage,
+} from "@mui/icons-material";
+import AuctionIcon from "../../images/auction.svg";
+import ProductIcon from "../../images/fruit-product.svg";
 
 const RenderMenuOptions = observer(({ store, user }) => {
+  const clientMenu = (
+    <React.Fragment>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Solicitudes Pedidos")}
+        selected={store.selectedMenuOption === "Solicitudes Pedidos"}
+      >
+        <ListItemIcon>
+          <RequestPage />
+        </ListItemIcon>
+        <ListItemText primary="Solicitudes Pedidos" />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Pedidos")}
+        selected={store.selectedMenuOption === "Pedidos"}
+      >
+        <ListItemIcon>
+          <ShoppingCartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Pedidos" />
+      </ListItemButton>
+    </React.Fragment>
+  );
+
   const producerMenu = (
     <React.Fragment>
       <ListItemButton
@@ -18,7 +49,14 @@ const RenderMenuOptions = observer(({ store, user }) => {
         selected={store.selectedMenuOption === "Productos"}
       >
         <ListItemIcon>
-          <AssignmentIcon />
+          <img
+            src={ProductIcon}
+            style={{
+              width: "20px",
+              height: "20px",
+              opacity: "0.5",
+            }}
+          ></img>
         </ListItemIcon>
         <ListItemText primary="Productos" />
       </ListItemButton>
@@ -31,7 +69,14 @@ const RenderMenuOptions = observer(({ store, user }) => {
         selected={store.selectedMenuOption === "Subastas"}
       >
         <ListItemIcon>
-          <DashboardIcon />
+          <img
+            src={AuctionIcon}
+            style={{
+              width: "30px",
+              height: "25px",
+              opacity: "0.5",
+            }}
+          ></img>
         </ListItemIcon>
         <ListItemText primary="Subastas" />
       </ListItemButton>
@@ -43,6 +88,15 @@ const RenderMenuOptions = observer(({ store, user }) => {
           <ShoppingCartIcon />
         </ListItemIcon>
         <ListItemText primary="Pedidos" />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Vehículos")}
+        selected={store.selectedMenuOption === "Vehículos"}
+      >
+        <ListItemIcon>
+          <DirectionsBus></DirectionsBus>
+        </ListItemIcon>
+        <ListItemText primary="Vehículos" />
       </ListItemButton>
     </React.Fragment>
   );
@@ -67,7 +121,7 @@ const RenderMenuOptions = observer(({ store, user }) => {
         selected={store.selectedMenuOption === "Perfil"}
       >
         <ListItemIcon>
-          <PeopleIcon />
+          <AccountCircle />
         </ListItemIcon>
         <ListItemText primary="Perfil" />
       </ListItemButton>
@@ -75,8 +129,11 @@ const RenderMenuOptions = observer(({ store, user }) => {
   );
   return (
     <>
+      {user.rol_id === 2 && consultantMenu}
       {user.rol_id === 3 && driverMenu}
       {user.rol_id === 4 && producerMenu}
+      {user.rol_id === 5 && clientMenu}
+      {user.rol_id === 6 && clientMenu}
       <Divider sx={{ my: 1 }} />
       {commonMenu}
     </>
