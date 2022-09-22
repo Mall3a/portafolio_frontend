@@ -3,11 +3,8 @@ import axios from "axios";
 const API_URL =
   "https://g15f555dd431949-maipograndebdd.adb.sa-santiago-1.oraclecloudapps.com/ords/Portafolio/";
 
-export const login = async (user, password) => {
-  return await axios.post(API_URL + "sp_login/", {
-    p_rut: user,
-    p_pass: password,
-  });
+export const getProductos = async () => {
+  return await axios.post(API_URL + "sp_get_all_productos/", );
 };
 
 export const getProductosProductor = async (id) => {
@@ -31,3 +28,29 @@ export const addProductosProductor = async (
     productor_rut: rut,
   });
 };
+
+export const updateProductosProductor = async (
+  idProductoProductor,
+  precio,
+  calidad,
+  cantidad
+) => {
+  return await axios.post(API_URL + "sp_update_producto_productor/", {
+  in_id_pp: idProductoProductor,
+  in_precio: precio,
+  in_calidad: calidad,
+  in_cantidad: cantidad
+  });
+};
+
+export const deleteProductosProductor = async (
+  idProductoProductor
+) => {
+  return await axios.post(API_URL + "sp_delete_producto_productor/", {
+  in_id_pp: idProductoProductor
+  });
+};
+
+
+
+

@@ -6,7 +6,7 @@ import Logo from "../../images/logo.svg";
 // This is a React Router v6 app
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { login } from "../../api/Apis";
+import { login } from "../../api/loginApi.js";
 import {
   Alert,
   FormControl,

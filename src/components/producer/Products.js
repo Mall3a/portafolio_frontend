@@ -7,7 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Title from "../common/Title";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import { getProductosProductor } from "../../api/Apis";
+import { getProductosProductor } from "../../api/producerApis.js";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Products.module.scss";
