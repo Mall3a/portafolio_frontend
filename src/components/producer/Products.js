@@ -114,8 +114,8 @@ const Products = ({ user }) => {
                       <TableCell align="right">Precio</TableCell>
                       <TableCell align="center">Calidad</TableCell>
                       <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
-                      <TableCell align="right"></TableCell>
-                      <TableCell align="right"></TableCell>
+                      <TableCell align="right">Editar</TableCell>
+                      <TableCell align="right">Eliminar</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
