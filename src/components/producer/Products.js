@@ -18,6 +18,7 @@ import { DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../common/Quality";
 import ProductImage from "./ProductImage";
 import DeleteProduct from "./DeleteProduct";
+import UpdateProduct from "./UpdateProduct";
 
 const style = {
   position: "absolute",
@@ -39,7 +40,11 @@ const Products = ({ user }) => {
   let [productos, setProductos] = useState([{}]);
   let [toggleAddProductModal, setToggleAddProductModal] = useState(false);
   let [toggleDeleteProductModal, setToggleDeleteProductModal] = useState(false);
-  let [selectedId, setSelectedId] = useState(null);
+  let [toggleUpdateProductModal, setToggleUpdateProductModal] = useState(false);
+  let [selectedProduct, setSelectedProduct] = useState({
+    id: null,
+    name: "",
+  });
 
   useEffect(() => {
     getProducerProducts();
@@ -66,9 +71,14 @@ const Products = ({ user }) => {
     }
   };
 
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = ({ id, nombre_producto }) => {
     setToggleDeleteProductModal(true);
-    setSelectedId(id);
+    setSelectedProduct({ id: id, name: nombre_producto });
+  };
+
+  const handleUpdateProduct = ({ id, nombre_producto }) => {
+    setToggleUpdateProductModal(true);
+    setSelectedProduct({ id: id, name: nombre_producto });
   };
 
   const handleAddProduct = () => {
@@ -136,7 +146,7 @@ const Products = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            //onClick={() => editProduct(id)}
+                            onClick={() => handleUpdateProduct(row)}
                             style={{ alignSelf: "end", color: "#1976d2" }}
                           >
                             <Edit />
@@ -146,7 +156,7 @@ const Products = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            onClick={() => handleDeleteProduct(row.id)}
+                            onClick={() => handleDeleteProduct(row)}
                             style={{ alignSelf: "end", color: "#d42c2c" }}
                           >
                             <DeleteForever />
@@ -181,9 +191,17 @@ const Products = ({ user }) => {
         onSuccess={() => {
           getProducerProducts();
         }}
-        id={selectedId && selectedId}
+        id={selectedProduct && selectedProduct.id}
         toggleDeleteProductModal={toggleDeleteProductModal}
         setToggleDeleteProductModal={setToggleDeleteProductModal}
+      />
+      <UpdateProduct
+        onSuccess={() => {
+          getProducerProducts();
+        }}
+        selectedProduct={selectedProduct && selectedProduct}
+        toggleUpdateProductModal={toggleUpdateProductModal}
+        setToggleUpdateProductModal={setToggleUpdateProductModal}
       />
     </>
   );
