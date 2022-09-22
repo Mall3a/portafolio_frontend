@@ -165,6 +165,8 @@ const AddProduct = ({
     setSuccess(false);
     setErrorMessage("");
     setSuccessMessage("");
+    setPrecio({ formattedValue: "", value: null, floatValue: null });
+    setCantidad(null);
     setToggleAddProductModal(false);
   };
 
