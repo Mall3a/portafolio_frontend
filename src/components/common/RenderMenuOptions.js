@@ -11,8 +11,10 @@ import Divider from "@mui/material/Divider";
 import { observer } from "mobx-react-lite";
 import {
   AccountCircle,
+  AttachMoney,
   CarRental,
   DirectionsBus,
+  Money,
   RequestPage,
 } from "@mui/icons-material";
 import AuctionIcon from "../../images/auction.svg";
@@ -80,6 +82,16 @@ const RenderMenuOptions = observer(({ store, user }) => {
         </ListItemIcon>
         <ListItemText primary="Subastas" />
       </ListItemButton>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Ofertas Subastas")}
+        selected={store.selectedMenuOption === "Ofertas Subastas"}
+      >
+        <ListItemIcon>
+          <AttachMoney />
+        </ListItemIcon>
+        <ListItemText primary="Ofertas Subastas" />
+      </ListItemButton>
+
       <ListItemButton
         onClick={() => store.setSelectedMenuOption("Pedidos")}
         selected={store.selectedMenuOption === "Pedidos"}

@@ -8,6 +8,7 @@ import Profile from "../common/Profile";
 import Reports from "../consultant/Reports";
 import OrderRequests from "../client/OrderRequests";
 import Vehicles from "../driver/Vehicles";
+import AuctionOffers from "../driver/AuctionOffers";
 
 const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
   return (
@@ -19,6 +20,9 @@ const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
       {store.selectedMenuOption === "Pedidos" && <Orders />}
       {store.selectedMenuOption === "Solicitudes Pedidos" && <OrderRequests />}
       {store.selectedMenuOption === "Perfil" && <Profile user={user} />}
+      {store.selectedMenuOption === "Ofertas Subastas" && (
+        <AuctionOffers user={user} />
+      )}
     </>
   );
 });
