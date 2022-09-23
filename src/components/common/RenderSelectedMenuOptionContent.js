@@ -15,10 +15,12 @@ const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
     <>
       {store.selectedMenuOption === "Reportes" && <Reports user={user} />}
       {store.selectedMenuOption === "Productos" && <Products user={user} />}
-      {store.selectedMenuOption === "Subastas" && <Auctions />}
-      {store.selectedMenuOption === "Vehículos" && <Vehicles />}
-      {store.selectedMenuOption === "Pedidos" && <Orders />}
-      {store.selectedMenuOption === "Solicitudes Pedidos" && <OrderRequests />}
+      {store.selectedMenuOption === "Subastas" && <Auctions user={user} />}
+      {store.selectedMenuOption === "Transportes" && <Vehicles user={user} />}
+      {store.selectedMenuOption === "Pedidos" && <Orders user={user} />}
+      {store.selectedMenuOption === "Solicitudes Pedidos" && (
+        <OrderRequests user={user} />
+      )}
       {store.selectedMenuOption === "Perfil" && <Profile user={user} />}
       {store.selectedMenuOption === "Ofertas Subastas" && (
         <AuctionOffers user={user} />

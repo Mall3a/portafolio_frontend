@@ -102,13 +102,13 @@ const RenderMenuOptions = observer(({ store, user }) => {
         <ListItemText primary="Pedidos" />
       </ListItemButton>
       <ListItemButton
-        onClick={() => store.setSelectedMenuOption("Vehículos")}
-        selected={store.selectedMenuOption === "Vehículos"}
+        onClick={() => store.setSelectedMenuOption("Transportes")}
+        selected={store.selectedMenuOption === "Transportes"}
       >
         <ListItemIcon>
           <DirectionsBus></DirectionsBus>
         </ListItemIcon>
-        <ListItemText primary="Vehículos" />
+        <ListItemText primary="Transportes" />
       </ListItemButton>
     </React.Fragment>
   );
