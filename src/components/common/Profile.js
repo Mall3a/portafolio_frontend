@@ -2,9 +2,9 @@ import { Avatar, FormLabel } from "@mui/material";
 import React from "react";
 import Title from "./Title";
 import styles from "./Profile.module.scss";
-import ProducerImg from "../../images/producer2.png";
-import DriverImg from "../../images/driver3.jpg";
-import ConsultantImg from "../../images/consultant.png";
+import ProducerImg from "../../images/avatars/producer2.png";
+import DriverImg from "../../images/avatars/driver3.jpg";
+import ConsultantImg from "../../images/avatars/consultant.png";
 
 const Profile = ({ user }) => {
   const setProfileImg = () => {

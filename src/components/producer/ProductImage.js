@@ -1,9 +1,9 @@
 import { Avatar } from "@mui/material";
 import React from "react";
-import ManzanaIcon from "../../images/manzana.svg";
-import PinaIcon from "../../images/pina.svg";
-import PlatanoIcon from "../../images/platano.svg";
-import ZanahoriaIcon from "../../images/zanahoria.svg";
+import ManzanaIcon from "../../images/fruits/manzana.svg";
+import PinaIcon from "../../images/fruits/pina.svg";
+import PlatanoIcon from "../../images/fruits/platano.svg";
+import ZanahoriaIcon from "../../images/fruits/zanahoria.svg";
 
 const ProductImage = ({ productName }) => {
   const getImageSrc = () => {

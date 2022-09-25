@@ -19,7 +19,7 @@ import {
   CloseSharp,
 } from "@mui/icons-material";
 import { getTransportesTransportista } from "../../api/driverApis";
-import FurgonImg from "../../images/furgon.jpg";
+import FurgonImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-furgon.jpg";
 
 const style = {
   position: "absolute",

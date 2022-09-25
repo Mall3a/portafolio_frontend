@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import AppBarTitle from "./AppBarTitle";
 import { observer } from "mobx-react-lite";
 import RenderSelectedMenuOptionContent from "./RenderSelectedMenuOptionContent";
-import logoHorizontal from "../../images/logo_h2.png";
+import logoHorizontal from "../../images/logos/logo_h2.png";
 import { useAuth } from "../../hooks/useAuth";
 import { Store } from "../../store/Store";
 

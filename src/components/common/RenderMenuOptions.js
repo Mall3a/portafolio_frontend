@@ -17,8 +17,8 @@ import {
   Money,
   RequestPage,
 } from "@mui/icons-material";
-import AuctionIcon from "../../images/auction.svg";
-import ProductIcon from "../../images/fruit-product.svg";
+import AuctionIcon from "../../images/icons/auction.svg";
+import ProductIcon from "../../images/icons/fruit-product.svg";
 
 const RenderMenuOptions = observer(({ store, user }) => {
   const clientMenu = (
