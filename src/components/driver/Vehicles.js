@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { getTransportesTransportista } from "../../api/driverApis";
 import FurgonImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-furgon.jpg";
+import BarandaMetalAltaImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-baranda-metal-alta.jpg";
 
 const style = {
   position: "absolute",
@@ -134,6 +135,13 @@ const Vehicles = ({ user }) => {
                             <img
                               style={{ width: "200px" }}
                               src={FurgonImg}
+                            ></img>
+                          )}
+                          {row.nombre_tipo_transporte ===
+                            "Baranda De Metal Alta" && (
+                            <img
+                              style={{ width: "200px" }}
+                              src={BarandaMetalAltaImg}
                             ></img>
                           )}
                         </TableCell>
