@@ -12,8 +12,14 @@ import Box from "@mui/material/Box";
 import styles from "./Vehicles.module.scss";
 import { Alert, Button } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { DeleteForever, Edit } from "@mui/icons-material";
+import {
+  DeleteForever,
+  Edit,
+  CheckSharp,
+  CloseSharp,
+} from "@mui/icons-material";
 import { getTransportesTransportista } from "../../api/driverApis";
+import FurgonImg from "../../images/furgon.jpg";
 
 const style = {
   position: "absolute",
@@ -53,11 +59,12 @@ const Vehicles = ({ user }) => {
 
     const data = response.data;
     console.log(data);
+
     if (response.status === 200) {
-      if (data.items.length > 0) {
-        setVehicles(data.items);
+      if (data.transportes.length > 0) {
+        setVehicles(data.transportes);
       } else {
-        setVehicles(data.items);
+        setVehicles(data.transportes);
         setHasError(false);
       }
       setLoading(false);
@@ -107,7 +114,7 @@ const Vehicles = ({ user }) => {
                     <TableRow>
                       <TableCell align="center">Imagen</TableCell>
                       <TableCell align="right">Patente</TableCell>
-                      <TableCell align="right">Capacidad&nbsp;(kg)</TableCell>
+                      <TableCell align="right">Capacidad&nbsp;(T)</TableCell>
                       <TableCell align="center">Refrigeración</TableCell>
                       <TableCell align="right">Tipo Transporte</TableCell>
                       <TableCell align="right">Editar</TableCell>
@@ -123,23 +130,31 @@ const Vehicles = ({ user }) => {
                         }}
                       >
                         <TableCell component="th" scope="row" align="center">
-                          <></>
+                          {row.nombre_tipo_transporte === "Furgón" && (
+                            <img
+                              style={{ width: "200px" }}
+                              src={FurgonImg}
+                            ></img>
+                          )}
                         </TableCell>
                         <TableCell component="th" scope="row" align="right">
                           {row.patente}
                         </TableCell>
-                        <TableCell align="right">
-                          <TableCell component="th" scope="row" align="right">
-                            {row.capacidad} kg
-                          </TableCell>
+
+                        <TableCell component="th" scope="row" align="right">
+                          {row.capacidad} T
                         </TableCell>
-                        <TableCell align="right">
-                          <TableCell component="th" scope="row" align="right">
-                            {row.refrigeracion}
-                          </TableCell>
+
+                        <TableCell component="th" scope="row" align="center">
+                          {row.refrigeracion == 1 ? (
+                            <CheckSharp style={{ color: "green" }} />
+                          ) : (
+                            <CloseSharp style={{ color: "red" }}></CloseSharp>
+                          )}
                         </TableCell>
-                        <TableCell align="right">
-                          {row.tipo_transporte_id}
+
+                        <TableCell align="center">
+                          {row.nombre_tipo_transporte}
                         </TableCell>
                         <TableCell align="right">
                           <IconButton

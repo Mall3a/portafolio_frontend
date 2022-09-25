@@ -8,5 +8,7 @@ export const getTransportes = async () => {
 };
 
 export const getTransportesTransportista = async (id) => {
-  return await axios.get(API_URL + "transporte/" + id);
+  return await axios.post(API_URL + "sp_get_transportes_transportista/", {
+    in_id_transportista: id,
+  });
 };
