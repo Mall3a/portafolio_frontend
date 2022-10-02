@@ -168,7 +168,7 @@ const Vehicles = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            //onClick={() => handleUpdateProduct(row)}
+                            //onClick={() => handleUpdateVehiculo(row)}
                             style={{ alignSelf: "end", color: "#1976d2" }}
                           >
                             <Edit />

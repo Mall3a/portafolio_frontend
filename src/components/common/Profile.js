@@ -20,10 +20,14 @@ const Profile = ({ user }) => {
     }
     return src;
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.avatarContainer}>
-        <Avatar src={setProfileImg()} sx={{ width: 250, height: 250 }}></Avatar>
+        <Avatar
+          src={user.foto_perfil}
+          sx={{ width: 250, height: 250 }}
+        ></Avatar>
       </div>
       <div className={styles.infoContainer}>
         <FormLabel>
