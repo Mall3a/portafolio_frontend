@@ -40,9 +40,22 @@ const UpdateProduct = ({
   setToggleUpdateProductModal,
   selectedProduct,
 }) => {
-  let [precio, setPrecio] = useState({});
-  let [calidad, setCalidad] = useState(3);
-  let [cantidad, setCantidad] = useState();
+  const format = (numStr) => {
+    if (numStr === "") return "";
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+      maximumFractionDigits: 0,
+    }).format(numStr);
+  };
+
+  let [precio, setPrecio] = useState({
+    value: selectedProduct.price,
+    formattedValue: format(selectedProduct.price),
+    floatValue: null,
+  });
+  let [calidad, setCalidad] = useState(selectedProduct.quality);
+  let [cantidad, setCantidad] = useState(selectedProduct.quantity);
   let [errorMessage, setErrorMessage] = useState("");
   let [successMessage, setSuccessMessage] = useState("");
   const [hasError, setHasError] = useState(false);
@@ -54,6 +67,7 @@ const UpdateProduct = ({
     setSuccess(false);
     setErrorMessage("");
     setSuccessMessage("");
+    console.log(selectedProduct);
 
     return () => {
       setHasError(false);
@@ -113,14 +127,6 @@ const UpdateProduct = ({
     }
   };
 
-  const format = (numStr) => {
-    if (numStr === "") return "";
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      maximumFractionDigits: 0,
-    }).format(numStr);
-  };
   const handleCloseModal = () => {
     setHasError(false);
     setSuccess(false);

@@ -44,6 +44,9 @@ const Products = ({ user }) => {
   let [selectedProduct, setSelectedProduct] = useState({
     id: null,
     name: "",
+    price: 0,
+    quality: 0,
+    quantity: 0,
   });
 
   useEffect(() => {
@@ -76,9 +79,22 @@ const Products = ({ user }) => {
     setSelectedProduct({ id: id, name: nombre_producto });
   };
 
-  const handleUpdateProduct = ({ id, nombre_producto }) => {
+  const handleUpdateProduct = ({
+    id,
+    nombre_producto,
+    precio,
+    cantidad,
+    calidad,
+  }) => {
+    console.log("update product");
     setToggleUpdateProductModal(true);
-    setSelectedProduct({ id: id, name: nombre_producto });
+    setSelectedProduct({
+      id: id,
+      name: nombre_producto,
+      price: precio,
+      quantity: cantidad,
+      quality: calidad,
+    });
   };
 
   const handleAddProduct = () => {
@@ -179,30 +195,36 @@ const Products = ({ user }) => {
           )}
         </Grid>
       )}
-      <AddProduct
-        rut={user.rut}
-        onSuccess={() => {
-          getProducerProducts();
-        }}
-        toggleAddProductModal={toggleAddProductModal}
-        setToggleAddProductModal={setToggleAddProductModal}
-      />
-      <DeleteProduct
-        onSuccess={() => {
-          getProducerProducts();
-        }}
-        id={selectedProduct && selectedProduct.id}
-        toggleDeleteProductModal={toggleDeleteProductModal}
-        setToggleDeleteProductModal={setToggleDeleteProductModal}
-      />
-      <UpdateProduct
-        onSuccess={() => {
-          getProducerProducts();
-        }}
-        selectedProduct={selectedProduct && selectedProduct}
-        toggleUpdateProductModal={toggleUpdateProductModal}
-        setToggleUpdateProductModal={setToggleUpdateProductModal}
-      />
+      {toggleAddProductModal && (
+        <AddProduct
+          rut={user.rut}
+          onSuccess={() => {
+            getProducerProducts();
+          }}
+          toggleAddProductModal={toggleAddProductModal}
+          setToggleAddProductModal={setToggleAddProductModal}
+        />
+      )}
+      {toggleDeleteProductModal && (
+        <DeleteProduct
+          onSuccess={() => {
+            getProducerProducts();
+          }}
+          id={selectedProduct && selectedProduct.id}
+          toggleDeleteProductModal={toggleDeleteProductModal}
+          setToggleDeleteProductModal={setToggleDeleteProductModal}
+        />
+      )}
+      {toggleUpdateProductModal && (
+        <UpdateProduct
+          onSuccess={() => {
+            getProducerProducts();
+          }}
+          selectedProduct={selectedProduct && selectedProduct}
+          toggleUpdateProductModal={toggleUpdateProductModal}
+          setToggleUpdateProductModal={setToggleUpdateProductModal}
+        />
+      )}
     </>
   );
 };
