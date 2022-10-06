@@ -19,7 +19,7 @@ const ProductImage = ({ productName }) => {
       case "Platano":
         src = PlatanoIcon;
         break;
-      case "Pina":
+      case "Piña":
         src = PinaIcon;
         break;
 
