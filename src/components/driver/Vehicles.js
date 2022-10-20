@@ -21,6 +21,9 @@ import {
 import { getTransportesTransportista } from "../../api/driverApis";
 import FurgonImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-furgon.jpg";
 import BarandaMetalAltaImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-baranda-metal-alta.jpg";
+import AddVehicle from "./AddVehicle";
+import DeleteVehicle from "./DeleteVehicle";
+import UpdateVehicle from "./UpdateVehicle";
 
 const style = {
   position: "absolute",
@@ -43,10 +46,7 @@ const Vehicles = ({ user }) => {
   let [toggleAddModal, setToggleAddModal] = useState(false);
   let [toggleDeleteModal, setToggleDeleteModal] = useState(false);
   let [toggleUpdateModal, setToggleUpdateModal] = useState(false);
-  let [selectedVehicle, setSelectedVehicle] = useState({
-    id: null,
-    name: "",
-  });
+  let [selectedVehicle, setSelectedVehicle] = useState();
 
   useEffect(() => {
     getDriverVehicles();
@@ -59,7 +59,6 @@ const Vehicles = ({ user }) => {
     const response = await getTransportesTransportista(user.rut);
 
     const data = response.data;
-    console.log(data);
 
     if (response.status === 200) {
       if (data.transportes.length > 0) {
@@ -74,21 +73,19 @@ const Vehicles = ({ user }) => {
       setLoading(false);
     }
   };
-  /* 
-  const handleDeleteProduct = ({ id, nombre_producto }) => {
-    setToggleDeleteProductModal(true);
-    setSelectedProduct({ id: id, name: nombre_producto });
+
+  const handleUpdateVehicle = (row) => {
+    setToggleUpdateModal(true);
+    setSelectedVehicle(row);
+  };
+  const handleDeleteVehicle = (row) => {
+    setToggleDeleteModal(true);
+    setSelectedVehicle(row);
   };
 
-  const handleUpdateProduct = ({ id, nombre_producto }) => {
-    setToggleUpdateProductModal(true);
-    setSelectedProduct({ id: id, name: nombre_producto });
+  const handleAddVehicle = () => {
+    setToggleAddModal(true);
   };
-
-  const handleAddProduct = () => {
-    setToggleAddProductModal(true);
-  };
- */
   return (
     <>
       {loading ? (
@@ -101,7 +98,7 @@ const Vehicles = ({ user }) => {
             <Button
               variant="contained"
               color="primary"
-              //onClick={handleAddProduct}
+              onClick={handleAddVehicle}
             >
               Agregar
             </Button>
@@ -168,7 +165,7 @@ const Vehicles = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            //onClick={() => handleUpdateVehiculo(row)}
+                            onClick={() => handleUpdateVehicle(row)}
                             style={{ alignSelf: "end", color: "#1976d2" }}
                           >
                             <Edit />
@@ -178,7 +175,7 @@ const Vehicles = ({ user }) => {
                           <IconButton
                             edge="start"
                             color="inherit"
-                            //onClick={() => handleDeleteProduct(row)}
+                            onClick={() => handleDeleteVehicle(row)}
                             style={{ alignSelf: "end", color: "#d42c2c" }}
                           >
                             <DeleteForever />
@@ -201,31 +198,38 @@ const Vehicles = ({ user }) => {
           )}
         </Grid>
       )}
-      {/* 
-      <AddProduct
-        rut={user.rut}
-        onSuccess={() => {
-          getProducerVehicles();
-        }}
-        toggleAddProductModal={toggleAddProductModal}
-        setToggleAddProductModal={setToggleAddProductModal}
-      />
-           <DeleteProduct
-        onSuccess={() => {
-          getProducerVehicles();
-        }}
-        id={selectedProduct && selectedProduct.id}
-        toggleDeleteProductModal={toggleDeleteProductModal}
-        setToggleDeleteProductModal={setToggleDeleteProductModal}
-      />
-      <UpdateProduct
-        onSuccess={() => {
-          getProducerVehicles();
-        }}
-        selectedProduct={selectedProduct && selectedProduct}
-        toggleUpdateProductModal={toggleUpdateProductModal}
-        setToggleUpdateProductModal={setToggleUpdateProductModal}
-      /> */}
+
+      {toggleAddModal && (
+        <AddVehicle
+          rut={user.rut}
+          onSuccess={() => {
+            getDriverVehicles();
+          }}
+          toggleAddModal={toggleAddModal}
+          setToggleAddModal={setToggleAddModal}
+        />
+      )}
+
+      {toggleDeleteModal && (
+        <DeleteVehicle
+          onSuccess={() => {
+            getDriverVehicles();
+          }}
+          selectedVehicle={selectedVehicle && selectedVehicle}
+          toggleDeleteModal={toggleDeleteModal}
+          setToggleDeleteModal={setToggleDeleteModal}
+        />
+      )}
+      {toggleUpdateModal && (
+        <UpdateVehicle
+          onSuccess={() => {
+            getDriverVehicles();
+          }}
+          selectedVehicle={selectedVehicle && selectedVehicle}
+          toggleUpdateModal={toggleUpdateModal}
+          setToggleUpdateModal={setToggleUpdateModal}
+        />
+      )}
     </>
   );
 };

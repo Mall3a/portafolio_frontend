@@ -30,50 +30,58 @@ export const mockProducts = {
   status: 200,
 };
 
-export const personData = [
-  {
-    name: {
-      firstName: "John",
-      lastName: "Doe",
-    },
-    address: "261 Erdman Ford",
-    city: "East Daphne",
-    state: "Kentucky",
+export const mockVehicleTypes = {
+  data: {
+    tipoTransportes: [
+      {
+        id: 1,
+        descripcion: "Plataforma",
+      },
+      {
+        id: 2,
+        descripcion: "Tolva",
+      },
+      {
+        id: 3,
+        descripcion: "Furgón",
+      },
+      {
+        id: 4,
+        descripcion: "Baranda De Madera Alta",
+      },
+      {
+        id: 5,
+        descripcion: "Baranda De Madera Baja",
+      },
+      {
+        id: 6,
+        descripcion: "Baranda De Madera Estandar",
+      },
+      {
+        id: 7,
+        descripcion: "Baranda De Metal Alta",
+      },
+
+      {
+        id: 8,
+        descripcion: "Baranda De Metal Baja",
+      },
+      {
+        id: 9,
+        descripcion: "Baranda De Metal Rebatible",
+      },
+      {
+        id: 10,
+        descripcion: "Carrocería Especial Cisterna De Agua",
+      },
+      {
+        id: 11,
+        descripcion: "Carrocería Especial Cisterna De Combustible",
+      },
+      {
+        id: 12,
+        descripcion: "Compactador",
+      },
+    ],
   },
-  {
-    name: {
-      firstName: "Jane",
-      lastName: "Doe",
-    },
-    address: "769 Dominic Grove",
-    city: "Columbus",
-    state: "Ohio",
-  },
-  {
-    name: {
-      firstName: "Joe",
-      lastName: "Doe",
-    },
-    address: "566 Brakus Inlet",
-    city: "South Linda",
-    state: "West Virginia",
-  },
-  {
-    name: {
-      firstName: "Kevin",
-      lastName: "Vandy",
-    },
-    address: "722 Emie Stream",
-    city: "Lincoln",
-    state: "Nebraska",
-  },
-  {
-    name: {
-      firstName: "Joshua",
-      lastName: "Rolluffs",
-    },
-    address: "32188 Larkin Turnpike",
-    city: "Omaha",
-    state: "Nebraska",
-  },
-];
+};
