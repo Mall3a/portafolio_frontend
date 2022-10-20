@@ -1,15 +1,20 @@
-import { Button, Card, TextField, Typography } from "@mui/material";
+import { Button, Card, TextField } from "@mui/material";
 import React, { useState } from "react";
 import styles from "./OrderRequestForm.module.scss";
 import moment from "moment";
 import Title from "../common/Title";
 
-const OrderRequestForm = ({ user }) => {
+const OrderRequestForm = ({
+  user,
+  setShowOrderRequestForm,
+  showOrderRequestForm,
+}) => {
   const { nombre, apellido_paterno, apellido_materno, rut } = user;
   const fechaActual = moment(new Date()).format("MM/DD/YYYY");
   const apellidos = apellido_paterno + " " + apellido_materno;
 
   const [direccion, setDireccion] = useState("");
+  const [productosCliente, setProductosCliente] = useState([]);
 
   const handleAddProduct = (product) => {};
   return (
@@ -54,6 +59,23 @@ const OrderRequestForm = ({ user }) => {
           Agregar Producto
         </Button>
       </form>
+      <div className={styles.buttonsContainer}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => setShowOrderRequestForm(false)}
+        >
+          Cancelar Solicitud
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddProduct}
+          disabled={!direccion || productosCliente.length < 1}
+        >
+          Crear Solicitud
+        </Button>
+      </div>
     </Card>
   );
 };
