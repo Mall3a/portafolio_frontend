@@ -107,11 +107,15 @@ const OrderRequestForm = ({
     setErrorMessage("");
     setSuccessMessage("");
 
+    console.log(selectedProductId, productos);
     if (cantidad) {
       if (cantidad >= 1) {
         const productoCliente = {
           id: productosCliente.length + 1,
-          nombre_producto: productos[selectedProductId].nombre_producto,
+          nombre_producto: productos.map(
+            (producto) =>
+              producto.id === selectedProductId && producto.nombre_producto
+          ),
           cantidad: cantidad,
           calidad: calidad,
         };
@@ -299,9 +303,9 @@ const OrderRequestForm = ({
                         label="Productos"
                         onChange={handleChange}
                       >
-                        {productos.map((producto, index) => {
+                        {productos.map((producto) => {
                           return (
-                            <MenuItem key={index} value={producto.id}>
+                            <MenuItem key={producto.id} value={producto.id}>
                               {producto.nombre_producto}
                             </MenuItem>
                           );
