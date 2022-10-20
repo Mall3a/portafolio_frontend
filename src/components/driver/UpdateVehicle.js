@@ -60,7 +60,7 @@ const UpdateVehicle = ({
     setSuccess(false);
     setErrorMessage("");
     setSuccessMessage("");
-    console.log(selectedVehicle);
+
     return () => {
       setHasError(false);
       setSuccess(false);
