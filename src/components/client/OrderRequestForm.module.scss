@@ -20,3 +20,20 @@
     gap: 20px;
   }
 }
+
+.productTableContainer {
+  margin: 30px;
+
+  .buttonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-bottom: 24px;
+  }
+}
+
+.modalTitleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
