@@ -1,7 +1,12 @@
 import React from "react";
+import OrderRequestForm from "./OrderRequestForm";
 
-const OrderRequests = () => {
-  return <div>Solicitudes de pedidos</div>;
+const OrderRequests = ({ user }) => {
+  return (
+    <>
+      <OrderRequestForm user={user}></OrderRequestForm>
+    </>
+  );
 };
 
 export default OrderRequests;

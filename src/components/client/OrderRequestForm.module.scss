@@ -1,0 +1,12 @@
+.container {
+  margin: 30px;
+  padding: 30px;
+
+  .formContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    gap: 20px;
+    padding: 20px 0px 20px 0px;
+  }
+}
