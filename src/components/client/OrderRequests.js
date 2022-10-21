@@ -119,7 +119,7 @@ const OrderRequests = ({ user }) => {
                                 edge="start"
                                 color="inherit"
                                 //onClick={() => handleDeleteProduct(row)}
-                                style={{ alignSelf: "end", color: "primary" }}
+                                style={{ alignSelf: "end", color: "#1976d2" }}
                               >
                                 <Search />
                               </IconButton>

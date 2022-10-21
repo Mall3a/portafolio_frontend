@@ -37,3 +37,21 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.modalFormContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0px 20px 0px;
+  align-items: flex-start;
+}
+
+.modalButtonsContainer {
+  padding: 20px 0px 20px 0px;
+  gap: 10px;
+  display: flex;
+  justify-content: end;
+  .addProductButton {
+    width: 115px;
+  }
+}

@@ -295,7 +295,7 @@ const OrderRequestForm = ({
                 </Box>
               ) : (
                 <form onSubmit={handleAgregarProducto}>
-                  <div className={styles.formContainer}>
+                  <div className={styles.modalFormContainer}>
                     <FormControl fullWidth>
                       <InputLabel>Productos</InputLabel>
                       <Select
@@ -341,7 +341,7 @@ const OrderRequestForm = ({
                       {errorMessage}
                     </Alert>
                   )}
-                  <div className={styles.buttonsContainer}>
+                  <div className={styles.modalButtonsContainer}>
                     <Button
                       type="submit"
                       variant="contained"
