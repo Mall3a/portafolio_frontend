@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrderRequestForm from "./OrderRequestForm";
 import {
   Alert,
   Button,
+  Chip,
   CircularProgress,
   Grid,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -15,6 +17,9 @@ import {
 import { Box } from "@mui/system";
 import styles from "./OrderRequests.module.scss";
 import Title from "../common/Title";
+import { getSolicitudesPedidos } from "../../api/clientApis";
+import moment from "moment";
+import { PanoramaFishEye, Search, Visibility } from "@mui/icons-material";
 
 const OrderRequests = ({ user }) => {
   const [hasError, setHasError] = useState(false);
@@ -26,6 +31,30 @@ const OrderRequests = ({ user }) => {
     setShowOrderRequestForm(true);
   };
 
+  useEffect(() => {
+    getClientOrderRequests();
+  }, []);
+
+  const getClientOrderRequests = async () => {
+    setLoading(true);
+    setHasError(false);
+
+    const response = await getSolicitudesPedidos(user.rut);
+    const data = response.data;
+
+    if (response.status === 200) {
+      if (data.solicitud_pedido_usuario.length > 0) {
+        setSolicitudes(data.solicitud_pedido_usuario);
+      } else {
+        setSolicitudes(data.solicitud_pedido_usuario);
+        setHasError(false);
+      }
+      setLoading(false);
+    } else {
+      setHasError(true);
+      setLoading(false);
+    }
+  };
   return (
     <>
       {showOrderRequestForm ? (
@@ -58,11 +87,10 @@ const OrderRequests = ({ user }) => {
                     <Table size="large">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">Patente</TableCell>
-                          <TableCell align="right">
-                            Capacidad&nbsp;(T)
-                          </TableCell>
-                          <TableCell align="right">Tipo Transporte</TableCell>
+                          <TableCell align="center">Fecha</TableCell>
+                          <TableCell align="center">Dirección</TableCell>
+                          <TableCell align="center">Estado</TableCell>
+                          <TableCell align="center">Detalle</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -73,14 +101,28 @@ const OrderRequests = ({ user }) => {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell component="th" scope="row" align="right">
-                              {row.patente}
-                            </TableCell>
-                            <TableCell component="th" scope="row" align="right">
-                              {row.capacidad} T
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              align="center"
+                            >
+                              {moment(row.fecha).format("MM/DD/YYYY")}
                             </TableCell>
                             <TableCell align="center">
-                              {row.nombre_tipo_transporte}
+                              {row.direccion}
+                            </TableCell>
+                            <TableCell align="center">
+                              <Chip label={row.estado} color="warning" />
+                            </TableCell>
+                            <TableCell align="center">
+                              <IconButton
+                                edge="start"
+                                color="inherit"
+                                //onClick={() => handleDeleteProduct(row)}
+                                style={{ alignSelf: "end", color: "primary" }}
+                              >
+                                <Search />
+                              </IconButton>
                             </TableCell>
                           </TableRow>
                         ))}
