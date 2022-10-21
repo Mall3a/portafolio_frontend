@@ -29,6 +29,8 @@ import Title from "../common/Title";
 import Quality from "../common/Quality";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import { getProductos } from "../../api/producerApis";
+import { validateAddress } from "../../api/clientApis";
+import { color } from "@mui/system";
 const style = {
   position: "absolute",
   top: "50%",
@@ -52,6 +54,10 @@ const OrderRequestForm = ({
   const apellidos = apellido_paterno + " " + apellido_materno;
 
   const [hasError, setHasError] = useState(false);
+  const [addressHasError, setAddressHasError] = useState(false);
+  let [addressErrorMessage, setAddressErrorMessage] = useState("");
+  let [completeAddress, setCompleteAddress] = useState("");
+
   const [direccion, setDireccion] = useState("");
   const [productosCliente, setProductosCliente] = useState([]);
 
@@ -71,6 +77,34 @@ const OrderRequestForm = ({
   const handleAddProduct = () => {
     setToggleAddProductModal(true);
   };
+
+  const validarDireccion = async () => {
+    setAddressHasError(false);
+    setAddressErrorMessage("");
+    setCompleteAddress("");
+    if (direccion.length >= 3) {
+      const response = await validateAddress(direccion);
+      const { data } = response.data;
+      if (response.status === 200) {
+        if (data.length === 1) {
+          setAddressHasError(false);
+          setAddressErrorMessage("");
+          setCompleteAddress(data[0].label);
+        } else {
+          setAddressHasError(true);
+          setAddressErrorMessage(
+            "La dirección no existe, escriba un nombre de calle y número"
+          );
+        }
+      } else {
+        setAddressHasError(true);
+        setAddressErrorMessage("Error en servicio para validar dirección");
+      }
+    }
+  };
+  useEffect(() => {
+    validarDireccion();
+  }, [direccion]);
 
   const handleCloseModal = () => {
     setHasError(false);
@@ -195,6 +229,15 @@ const OrderRequestForm = ({
           onChange={(e) => setDireccion(e.target.value)}
         ></TextField>
       </div>
+      <div className={styles.addressMessageContainers}>
+        {addressHasError ? (
+          <Alert severity="error">{addressErrorMessage}</Alert>
+        ) : (
+          completeAddress !== "" && (
+            <Alert severity="success">{completeAddress}</Alert>
+          )
+        )}
+      </div>
       <div>
         <Grid item xs={12} className={styles.productTableContainer}>
           <div className={styles.buttonContainer}>
@@ -263,10 +306,6 @@ const OrderRequestForm = ({
                 </Table>
               </React.Fragment>
             </Paper>
-          ) : hasError ? (
-            <Alert severity="error">
-              Ha ocurrido un error al intentar obtener la lista de productos
-            </Alert>
           ) : (
             <Alert severity="info">
               Agregue un producto para visualizarlo en ésta área
@@ -376,7 +415,9 @@ const OrderRequestForm = ({
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          disabled={!direccion || productosCliente.length < 1}
+          disabled={
+            !direccion || addressHasError || productosCliente.length < 1
+          }
         >
           Crear Solicitud
         </Button>
