@@ -60,7 +60,12 @@ const OrderRequests = ({ user }) => {
       {showOrderRequestForm ? (
         <OrderRequestForm
           user={user}
-          setShowOrderRequestForm={(e) => setShowOrderRequestForm(e)}
+          setShowOrderRequestForm={(e) => {
+            if (e === false) {
+              setShowOrderRequestForm(e);
+              getClientOrderRequests();
+            }
+          }}
           showOrderRequestForm={showOrderRequestForm}
         />
       ) : (

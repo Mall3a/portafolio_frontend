@@ -1,5 +1,6 @@
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Card,
@@ -31,6 +32,8 @@ import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import { getProductos } from "../../api/producerApis";
 import { insertSolicitudPedido, validateAddress } from "../../api/clientApis";
 import { color } from "@mui/system";
+import { countries } from "../../api/MockData";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -57,8 +60,12 @@ const OrderRequestForm = ({
   const [addressHasError, setAddressHasError] = useState(false);
   let [addressErrorMessage, setAddressErrorMessage] = useState("");
   let [completeAddress, setCompleteAddress] = useState("");
-
+  let [addressesList, setAddressesList] = useState([]);
   const [direccion, setDireccion] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [estado, setEstado] = useState("");
+  const [codigoPostal, setCodigoPostal] = useState("");
+  const [pais, setPais] = useState("");
   const [productosCliente, setProductosCliente] = useState([]);
 
   const [loadingProducts, setLoadingProducts] = useState(false);
@@ -86,10 +93,11 @@ const OrderRequestForm = ({
       const response = await validateAddress(direccion);
       const { data } = response.data;
       if (response.status === 200) {
-        if (data.length === 1) {
+        if (data.length >= 1) {
           setAddressHasError(false);
           setAddressErrorMessage("");
-          setCompleteAddress(data[0].label);
+          //setCompleteAddress(data[0].label);
+          setAddressesList(data);
         } else {
           setAddressHasError(true);
           setAddressErrorMessage(
@@ -103,7 +111,8 @@ const OrderRequestForm = ({
     }
   };
   useEffect(() => {
-    validarDireccion();
+    //TODO: arreglar validar dirección
+    // validarDireccion();
   }, [direccion]);
 
   const handleCloseModal = () => {
@@ -195,6 +204,8 @@ const OrderRequestForm = ({
       };
     });
 
+    const direccionCompleta = `${direccion}, ${ciudad}, ${estado}, ${pais}, ${codigoPostal}`;
+
     if (detalle.length > 0 && completeAddress && rut) {
       const response = await insertSolicitudPedido(
         rut,
@@ -205,7 +216,8 @@ const OrderRequestForm = ({
       if (response.status === 200) {
         if (data) {
           console.log(data);
-          //Devolver a pagina de solicitudes
+          setShowOrderRequestForm(false);
+          //trigger order requests
         } else {
           //fallo al crear la solicitd
         }
@@ -249,18 +261,99 @@ const OrderRequestForm = ({
         <TextField
           style={{ width: 500 }}
           id="direccion"
-          label="Direccion"
-          variant="outlined"
+          label="Dirección"
           value={direccion}
           onChange={(e) => setDireccion(e.target.value)}
-        ></TextField>
+        />
+        <TextField
+          style={{ width: 300 }}
+          id="ciudad"
+          label="Ciudad"
+          value={ciudad}
+          onChange={(e) => setCiudad(e.target.value)}
+        />
+        <TextField
+          style={{ width: 300 }}
+          id="estado"
+          label="Estado, Provincia o Departamento"
+          value={estado}
+          onChange={(e) => setEstado(e.target.value)}
+        />
+        <TextField
+          style={{ width: 300 }}
+          type="number"
+          id="codigoPostal"
+          label="Código Postal"
+          value={codigoPostal}
+          onChange={(e) => setCodigoPostal(e.target.value)}
+        />
+        <Autocomplete
+          onChange={(e, option) =>
+            option?.label ? setPais(option.label) : setPais("")
+          }
+          id="autocomplete-pais"
+          sx={{ width: 300 }}
+          options={countries}
+          autoHighlight
+          getOptionLabel={(option) => option.label}
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              {...props}
+            >
+              <img
+                loading="lazy"
+                width="20"
+                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                alt=""
+              />
+              {option.label} ({option.code})
+            </Box>
+          )}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Pais"
+              value={pais}
+              // onChange={(e) => setPais(e.target.value)}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "autocomplete-pais", // disable autocomplete and autofill
+              }}
+            />
+          )}
+        />
+
+        {/**
+         *     <Autocomplete
+          //onChange={(e) => setDireccion(e.target.value)}
+          disablePortal
+          options={addressesList.map((address) => address.name)}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              style={{ width: 500 }}
+              id="direccion"
+              label="Dirección"
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+              InputProps={{
+                ...params.InputProps,
+              }}
+            />
+          )}
+        />
+         */}
       </div>
       <div className={styles.addressMessageContainers}>
-        {addressHasError && (
+        {addressHasError ? (
           <Alert severity="error">{addressErrorMessage}</Alert>
+        ) : (
+          completeAddress && <Alert severity="success">{completeAddress}</Alert>
         )}
-
-        {completeAddress && <Alert severity="success">{completeAddress}</Alert>}
       </div>
       <div>
         <Grid item xs={12} className={styles.productTableContainer}>
@@ -440,7 +533,13 @@ const OrderRequestForm = ({
           color="primary"
           onClick={handleSubmit}
           disabled={
-            !completeAddress || addressHasError || productosCliente.length < 1
+            !direccion ||
+            !ciudad ||
+            !estado ||
+            !pais ||
+            !codigoPostal ||
+            addressHasError ||
+            productosCliente.length < 1
           }
         >
           Crear Solicitud
