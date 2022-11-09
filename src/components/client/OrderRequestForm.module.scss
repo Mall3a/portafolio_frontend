@@ -10,6 +10,20 @@
     padding: 20px 0px 20px 0px;
   }
 
+  .addressMessageContainers {
+    width: 500px;
+  }
+
+  .productTableContainer {
+    margin: 30px;
+
+    .buttonContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding-bottom: 24px;
+    }
+  }
   .buttonsContainer {
     display: flex;
     flex-direction: row;
@@ -18,17 +32,6 @@
     justify-content: center;
     padding-bottom: 24px;
     gap: 20px;
-  }
-}
-
-.productTableContainer {
-  margin: 30px;
-
-  .buttonContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding-bottom: 24px;
   }
 }
 
@@ -54,8 +57,4 @@
   .addProductButton {
     width: 115px;
   }
-}
-
-.addressMessageContainers {
-  width: 500px;
 }

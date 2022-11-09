@@ -155,7 +155,7 @@ const AddVehicle = ({ rut, onSuccess, toggleAddModal, setToggleAddModal }) => {
     <Modal open={toggleAddModal} disableEscapeKeyDown>
       <Box sx={style}>
         <div className={styles.modalTitleContainer}>
-          <Title>Agregar Vehiculo</Title>
+          <Title>Agregar Transporte</Title>
           <IconButton
             edge="start"
             color="inherit"

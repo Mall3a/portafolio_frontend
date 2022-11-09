@@ -182,9 +182,6 @@ const OrderRequestForm = ({
   useEffect(() => {
     getProducts();
   }, []);
-  useEffect(() => {
-    console.log(productosCliente);
-  }, [productosCliente]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
