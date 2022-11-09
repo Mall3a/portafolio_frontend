@@ -29,7 +29,7 @@ import Title from "../common/Title";
 import Quality from "../common/Quality";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import { getProductos } from "../../api/producerApis";
-import { validateAddress } from "../../api/clientApis";
+import { insertSolicitudPedido, validateAddress } from "../../api/clientApis";
 import { color } from "@mui/system";
 const style = {
   position: "absolute",
@@ -141,17 +141,18 @@ const OrderRequestForm = ({
     setErrorMessage("");
     setSuccessMessage("");
 
-    console.log(selectedProductId, productos);
     if (cantidad) {
       if (cantidad >= 1) {
         const productoCliente = {
           id: productosCliente.length + 1,
-          nombre_producto: productos.map(
-            (producto) =>
-              producto.id === selectedProductId && producto.nombre_producto
-          ),
-          cantidad: cantidad,
           calidad: calidad,
+          cantidad: cantidad,
+          nombre_producto: productos.find(
+            (producto) => producto.id === selectedProductId
+          ).nombre_producto,
+          idProducto: productos.find(
+            (producto) => producto.id === selectedProductId
+          ).id,
         };
         setProductosCliente([...productosCliente, productoCliente]);
         setSuccess(true);
@@ -183,9 +184,37 @@ const OrderRequestForm = ({
     getProducts();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("llamar a api para insertar solicitud");
+
+    const detalle = productosCliente.map((producto) => {
+      return {
+        producto_id: producto.idProducto,
+        calidad: producto.calidad,
+        cantidad: producto.cantidad,
+      };
+    });
+
+    if (detalle.length > 0 && completeAddress && rut) {
+      const response = await insertSolicitudPedido(
+        rut,
+        completeAddress,
+        detalle
+      );
+      const { data } = response.data;
+      if (response.status === 200) {
+        if (data) {
+          console.log(data);
+          //Devolver a pagina de solicitudes
+        } else {
+          //fallo al crear la solicitd
+        }
+      } else {
+        //fallo del servicio
+      }
+    } else {
+      //debe ingresar los valores
+    }
   };
 
   return (
@@ -227,13 +256,11 @@ const OrderRequestForm = ({
         ></TextField>
       </div>
       <div className={styles.addressMessageContainers}>
-        {addressHasError ? (
+        {addressHasError && (
           <Alert severity="error">{addressErrorMessage}</Alert>
-        ) : (
-          completeAddress !== "" && (
-            <Alert severity="success">{completeAddress}</Alert>
-          )
         )}
+
+        {completeAddress && <Alert severity="success">{completeAddress}</Alert>}
       </div>
       <div>
         <Grid item xs={12} className={styles.productTableContainer}>
@@ -413,7 +440,7 @@ const OrderRequestForm = ({
           color="primary"
           onClick={handleSubmit}
           disabled={
-            !direccion || addressHasError || productosCliente.length < 1
+            !completeAddress || addressHasError || productosCliente.length < 1
           }
         >
           Crear Solicitud

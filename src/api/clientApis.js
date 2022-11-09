@@ -19,3 +19,17 @@ export const getSolicitudesPedidos = async (rut) => {
     in_rut: rut,
   });
 };
+
+export const insertSolicitudPedido = async (rut, direccion, detalle) => {
+  const object = {
+    solicitud: {
+      usuario_id: rut,
+      direccion: direccion,
+      detalle_productos: detalle,
+    },
+  };
+
+  return await axios.post(API_URL + "sp_insert_solicitud_y_detalle/", {
+    in_objeto_json: JSON.stringify(object),
+  });
+};
