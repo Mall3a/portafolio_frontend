@@ -238,6 +238,7 @@ const OrderRequests = ({ user }) => {
                           <Table size="large">
                             <TableHead>
                               <TableRow>
+                                <TableCell align="right">Imagen</TableCell>
                                 <TableCell align="right">Nombre</TableCell>
                                 <TableCell align="center">Calidad</TableCell>
                                 <TableCell align="right">
@@ -255,6 +256,17 @@ const OrderRequests = ({ user }) => {
                                     },
                                   }}
                                 >
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    align="right"
+                                  >
+                                    <img
+                                      src={row.imagen}
+                                      style={{ width: 50, height: 50 }}
+                                      alt="fruit"
+                                    />
+                                  </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"

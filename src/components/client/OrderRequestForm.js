@@ -167,6 +167,9 @@ const OrderRequestForm = ({
       if (cantidad >= 1) {
         const productoCliente = {
           id: productosCliente.length + 1,
+          imagen: productos.find(
+            (producto) => producto.id === selectedProductId
+          ).imagen,
           calidad: calidad,
           cantidad: cantidad,
           nombre_producto: productos.find(
@@ -448,6 +451,7 @@ const OrderRequestForm = ({
                 <Table size="large">
                   <TableHead>
                     <TableRow>
+                      <TableCell align="right">Imagen</TableCell>
                       <TableCell align="right">Nombre</TableCell>
                       <TableCell align="center">Calidad</TableCell>
                       <TableCell align="right">Cantidad&nbsp;(kg)</TableCell>
@@ -463,6 +467,13 @@ const OrderRequestForm = ({
                           "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
+                        <TableCell component="th" scope="row" align="right">
+                          <img
+                            src={row.imagen}
+                            alt="fruit"
+                            style={{ width: 50, height: 50 }}
+                          />
+                        </TableCell>
                         <TableCell component="th" scope="row" align="right">
                           {row.nombre_producto}
                         </TableCell>
