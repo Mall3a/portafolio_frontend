@@ -225,7 +225,9 @@ const OrderRequests = ({ user }) => {
                     </div>
 
                     {loadingProductosSolicitud ? (
-                      <Box className={styles.loadingContainer}>
+                      <Box
+                        className={styles.loadingProductosSolicitudContainer}
+                      >
                         <CircularProgress />
                       </Box>
                     ) : productosSolicitud.length > 0 ? (
