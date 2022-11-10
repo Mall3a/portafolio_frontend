@@ -14,6 +14,59 @@ export const validateAddress = async (direccion) => {
   );
 };
 
+export const getToken = async () => {
+  return await axios.get(
+    "https://www.universal-tutorial.com/api/getaccesstoken",
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "api-token":
+          "u7NjDdiDzxbqKn_1WnjnJr14GLTF0ScvqVtQxKVXmf8e9pWqIWFJ2pqnwgdMTibD70Q",
+        "user-email": "con.mallea@duocuc.cl",
+      },
+    }
+  );
+};
+
+export const getCountries = async (token) => {
+  return await axios.get("https://www.universal-tutorial.com/api/countries/", {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+};
+
+export const getCountriesStates = async (token, pais) => {
+  return await axios.get(
+    `https://www.universal-tutorial.com/api/states/${pais}`,
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+};
+export const getStatesCities = async (token, estado) => {
+  return await axios.get(
+    `https://www.universal-tutorial.com/api/cities/${estado}`,
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+};
 export const getSolicitudesPedidos = async (rut) => {
   return await axios.post(API_URL + "sp_get_solicitud_pedido_usuario/", {
     in_rut: rut,
@@ -36,6 +89,6 @@ export const insertSolicitudPedido = async (rut, direccion, detalle) => {
 
 export const getDetalleSolicitudPedido = async (id) => {
   return await axios.post(API_URL + "sp_get_detalle_solicitud_pedido/", {
-    in_id: id,
+    in_id_solicitud_pedido: id,
   });
 };

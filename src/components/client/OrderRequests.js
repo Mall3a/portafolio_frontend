@@ -19,8 +19,10 @@ import { Box } from "@mui/system";
 import styles from "./OrderRequests.module.scss";
 import Title from "../common/Title";
 import {
+  getCountries,
   getDetalleSolicitudPedido,
   getSolicitudesPedidos,
+  getToken,
 } from "../../api/clientApis";
 import moment from "moment";
 import {
@@ -238,7 +240,6 @@ const OrderRequests = ({ user }) => {
                         sx={{ p: 2, display: "flex", flexDirection: "column" }}
                       >
                         <React.Fragment>
-                          <Title>Productos</Title>
                           <Table size="large">
                             <TableHead>
                               <TableRow>

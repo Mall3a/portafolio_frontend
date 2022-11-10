@@ -31,7 +31,14 @@ import Title from "../common/Title";
 import Quality from "../common/Quality";
 import { Close, DeleteForever, Edit } from "@mui/icons-material";
 import { getProductos } from "../../api/producerApis";
-import { insertSolicitudPedido, validateAddress } from "../../api/clientApis";
+import {
+  getCountries,
+  getCountriesStates,
+  getStatesCities,
+  getToken,
+  insertSolicitudPedido,
+  validateAddress,
+} from "../../api/clientApis";
 import { color } from "@mui/system";
 import { countries } from "../../api/MockData";
 import { LoadingButton } from "@mui/lab";
@@ -62,11 +69,10 @@ const OrderRequestForm = ({
   const [addressHasError, setAddressHasError] = useState(false);
   let [addressErrorMessage, setAddressErrorMessage] = useState("");
   let [completeAddress, setCompleteAddress] = useState("");
-  let [addressesList, setAddressesList] = useState([]);
   const [direccion, setDireccion] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [estado, setEstado] = useState("");
-  const [codigoPostal, setCodigoPostal] = useState("");
+
   const [pais, setPais] = useState("");
   const [productosCliente, setProductosCliente] = useState([]);
 
@@ -87,40 +93,40 @@ const OrderRequestForm = ({
   let [orderRequestLoading, setOrderRequestLoading] = useState(false);
   let [orderRequestHasError, setOrderRequestHasError] = useState(false);
   let [orderRequestErrorMessage, setOrderRequestErrorMessage] = useState(false);
+  let [addressToken, setAddressToken] = useState("");
+
+  let [paises, setPaises] = useState([]);
+  let [estados, setEstados] = useState([]);
+  let [ciudades, setCiudades] = useState([]);
 
   const handleAddProduct = () => {
     setToggleAddProductModal(true);
   };
 
-  const validarDireccion = async () => {
+  const validarDireccion = async (address) => {
     setAddressHasError(false);
     setAddressErrorMessage("");
-    setCompleteAddress("");
-    if (direccion.length >= 3) {
-      const response = await validateAddress(direccion);
-      const { data } = response.data;
-      if (response.status === 200) {
-        if (data.length >= 1) {
-          setAddressHasError(false);
-          setAddressErrorMessage("");
-          //setCompleteAddress(data[0].label);
-          setAddressesList(data);
-        } else {
-          setAddressHasError(true);
-          setAddressErrorMessage(
-            "La dirección no existe, escriba un nombre de calle y número"
-          );
-        }
+
+    const response = await validateAddress(address);
+    const { data } = response.data;
+    if (response.status === 200) {
+      if (data.length === 1) {
+        setAddressHasError(false);
+        setAddressErrorMessage("");
       } else {
         setAddressHasError(true);
-        setAddressErrorMessage("Error en servicio para validar dirección");
+        setAddressErrorMessage(
+          "La dirección no existe o retorna más de una coincidencia"
+        );
       }
+    } else {
+      setAddressHasError(true);
+      setAddressErrorMessage("Error en servicio para validar dirección");
     }
   };
   useEffect(() => {
-    //TODO: arreglar validar dirección
-    // validarDireccion();
-  }, [direccion]);
+    setCompleteAddress(`${direccion}, ${ciudad}, ${estado}, ${pais}`);
+  }, [direccion, ciudad, estado, pais]);
 
   const handleCloseModal = () => {
     setHasError(false);
@@ -196,9 +202,42 @@ const OrderRequestForm = ({
     setSelectedProductId(e.target.value);
   };
 
+  const getAddressToken = async () => {
+    const token = await getToken();
+    setAddressToken(token.data.auth_token);
+  };
+
+  const getPaises = async () => {
+    const countries = await getCountries(addressToken);
+    setPaises(countries.data);
+  };
+
+  const getEstados = async () => {
+    const states = await getCountriesStates(addressToken, pais);
+    setEstados(states.data);
+  };
+
+  const getCiudades = async () => {
+    const ciudades = await getStatesCities(addressToken, estado);
+    setCiudades(ciudades.data);
+  };
+
   useEffect(() => {
+    if (estado) getCiudades();
+  }, [estado, addressToken]);
+
+  useEffect(() => {
+    if (pais) getEstados();
+  }, [pais, addressToken]);
+
+  useEffect(() => {
+    getAddressToken();
     getProducts();
   }, []);
+
+  useEffect(() => {
+    getPaises();
+  }, [addressToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -213,34 +252,35 @@ const OrderRequestForm = ({
       };
     });
 
-    const direccionCompleta = `${direccion}, ${ciudad}, ${estado}, ${pais}, ${codigoPostal}`;
-
     if (
       detalle.length > 0 &&
       direccion &&
       ciudad &&
       estado &&
       pais &&
-      codigoPostal &&
+      completeAddress &&
       rut
     ) {
-      const response = await insertSolicitudPedido(
-        rut,
-        direccionCompleta,
-        detalle
-      );
+      //validarDireccion(completeAddress);
+      if (!addressHasError) {
+        const response = await insertSolicitudPedido(
+          rut,
+          completeAddress,
+          detalle
+        );
 
-      if (response.status === 200) {
-        //trigger order requests
-        setShowOrderRequestForm(false, "create");
-        setOrderRequestLoading(true);
-        setOrderRequestHasError(false);
-        setOrderRequestErrorMessage("");
-      } else {
-        //fallo del servicio
-        setOrderRequestLoading(false);
-        setOrderRequestHasError(true);
-        setOrderRequestErrorMessage("fallo del servicio");
+        if (response.status === 200) {
+          //trigger order requests
+          setShowOrderRequestForm(false, "create");
+          setOrderRequestLoading(true);
+          setOrderRequestHasError(false);
+          setOrderRequestErrorMessage("");
+        } else {
+          //fallo del servicio
+          setOrderRequestLoading(false);
+          setOrderRequestHasError(true);
+          setOrderRequestErrorMessage("fallo del servicio");
+        }
       }
     } else {
       //debe ingresar los valores
@@ -279,44 +319,15 @@ const OrderRequestForm = ({
           variant="outlined"
           value={fechaActual}
         ></TextField>
-        <TextField
-          style={{ width: 500 }}
-          id="direccion"
-          label="Dirección"
-          value={direccion}
-          onChange={(e) => setDireccion(e.target.value)}
-        />
-        <TextField
-          style={{ width: 300 }}
-          id="ciudad"
-          label="Ciudad"
-          value={ciudad}
-          onChange={(e) => setCiudad(e.target.value)}
-        />
-        <TextField
-          style={{ width: 300 }}
-          id="estado"
-          label="Estado, Provincia o Departamento"
-          value={estado}
-          onChange={(e) => setEstado(e.target.value)}
-        />
-        <TextField
-          style={{ width: 300 }}
-          type="number"
-          id="codigoPostal"
-          label="Código Postal"
-          value={codigoPostal}
-          onChange={(e) => setCodigoPostal(e.target.value)}
-        />
         <Autocomplete
           onChange={(e, option) =>
-            option?.label ? setPais(option.label) : setPais("")
+            option?.country_name ? setPais(option.country_name) : setPais("")
           }
           id="autocomplete-pais"
           sx={{ width: 300 }}
-          options={countries}
+          options={paises}
           autoHighlight
-          getOptionLabel={(option) => option.label}
+          getOptionLabel={(option) => option.country_name}
           renderOption={(props, option) => (
             <Box
               component="li"
@@ -326,11 +337,11 @@ const OrderRequestForm = ({
               <img
                 loading="lazy"
                 width="20"
-                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                src={`https://flagcdn.com/w20/${option.country_short_name.toLowerCase()}.png`}
+                srcSet={`https://flagcdn.com/w40/${option.country_short_name.toLowerCase()}.png 2x`}
                 alt=""
               />
-              {option.label} ({option.code})
+              {option.country_name} ({option.country_short_name})
             </Box>
           )}
           renderInput={(params) => (
@@ -346,34 +357,77 @@ const OrderRequestForm = ({
             />
           )}
         />
-
-        {/**
-         *     <Autocomplete
-          //onChange={(e) => setDireccion(e.target.value)}
-          disablePortal
-          options={addressesList.map((address) => address.name)}
+        <Autocomplete
+          onChange={(e, option) =>
+            option?.state_name ? setEstado(option.state_name) : setEstado("")
+          }
+          id="autocomplete-estado"
           sx={{ width: 300 }}
+          options={estados}
+          autoHighlight
+          getOptionLabel={(option) => option.state_name}
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              {...props}
+            >
+              {option.state_name}
+            </Box>
+          )}
           renderInput={(params) => (
             <TextField
               {...params}
-              style={{ width: 500 }}
-              id="direccion"
-              label="Dirección"
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
-              InputProps={{
-                ...params.InputProps,
+              label="Estado, Provincia o Departamento"
+              value={estado}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "autocomplete-estado", // disable autocomplete and autofill
               }}
             />
           )}
         />
-         */}
+        <Autocomplete
+          onChange={(e, option) =>
+            option?.city_name ? setCiudad(option.city_name) : setCiudad("")
+          }
+          id="autocomplete-ciudad"
+          sx={{ width: 300 }}
+          options={ciudades}
+          autoHighlight
+          getOptionLabel={(option) => option.city_name}
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              {...props}
+            >
+              {option.city_name}
+            </Box>
+          )}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Ciudad"
+              value={ciudad}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "autocomplete-ciudad", // disable autocomplete and autofill
+              }}
+            />
+          )}
+        />
+        <TextField
+          style={{ width: 500 }}
+          id="direccion"
+          label="Dirección"
+          value={direccion}
+          onChange={(e) => setDireccion(e.target.value)}
+        />
       </div>
       <div className={styles.addressMessageContainers}>
-        {addressHasError ? (
+        {addressHasError && (
           <Alert severity="error">{addressErrorMessage}</Alert>
-        ) : (
-          completeAddress && <Alert severity="success">{completeAddress}</Alert>
         )}
       </div>
       <div>
@@ -571,7 +625,6 @@ const OrderRequestForm = ({
               !ciudad ||
               !estado ||
               !pais ||
-              !codigoPostal ||
               addressHasError ||
               productosCliente.length < 1
             }
