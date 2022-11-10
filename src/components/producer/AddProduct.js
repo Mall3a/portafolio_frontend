@@ -200,15 +200,17 @@ const AddProduct = ({
                   gap: 20,
                 }}
               >
-                <img
-                  src={
-                    productos.find(
-                      (producto) => producto.id === selectedProductId
-                    ).imagen
-                  }
-                  alt="fruit"
-                  style={{ width: 50, height: 50 }}
-                />
+                {productos && productos.length > 1 && (
+                  <img
+                    src={
+                      productos.find(
+                        (producto) => producto.id === selectedProductId
+                      ).imagen
+                    }
+                    alt="fruit"
+                    style={{ width: 50, height: 50 }}
+                  />
+                )}
                 <FormControl fullWidth>
                   <InputLabel>Productos</InputLabel>
                   <Select
