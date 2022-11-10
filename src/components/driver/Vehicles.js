@@ -128,19 +128,10 @@ const Vehicles = ({ user }) => {
                         }}
                       >
                         <TableCell component="th" scope="row" align="center">
-                          {row.nombre_tipo_transporte === "Furgón" && (
-                            <img
-                              style={{ width: "200px" }}
-                              src={FurgonImg}
-                            ></img>
-                          )}
-                          {row.nombre_tipo_transporte ===
-                            "Baranda De Metal Alta" && (
-                            <img
-                              style={{ width: "200px" }}
-                              src={BarandaMetalAltaImg}
-                            ></img>
-                          )}
+                          <img
+                            style={{ width: "200px" }}
+                            src={row.imagen}
+                          ></img>
                         </TableCell>
                         <TableCell component="th" scope="row" align="right">
                           {row.patente}
