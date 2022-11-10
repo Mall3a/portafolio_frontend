@@ -19,18 +19,11 @@ import { Box } from "@mui/system";
 import styles from "./OrderRequests.module.scss";
 import Title from "../common/Title";
 import {
-  getCountries,
   getDetalleSolicitudPedido,
   getSolicitudesPedidos,
-  getToken,
 } from "../../api/clientApis";
 import moment from "moment";
-import {
-  Close,
-  PanoramaFishEye,
-  Search,
-  Visibility,
-} from "@mui/icons-material";
+import { Close, Search } from "@mui/icons-material";
 import Quality from "../common/Quality";
 
 const style = {
@@ -279,6 +272,10 @@ const OrderRequests = ({ user }) => {
                           </Table>
                         </React.Fragment>
                       </Paper>
+                    ) : hasErrorProductosSolicitud ? (
+                      <Alert severity="error">
+                        {errorMessageProductosSolicitud}
+                      </Alert>
                     ) : (
                       <Alert severity="info">Solicitud sin productos</Alert>
                     )}

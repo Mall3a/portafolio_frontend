@@ -1,26 +1,8 @@
 import { Avatar, FormLabel } from "@mui/material";
 import React from "react";
-import Title from "./Title";
 import styles from "./Profile.module.scss";
-import ProducerImg from "../../images/avatars/producer2.png";
-import DriverImg from "../../images/avatars/driver3.jpg";
-import ConsultantImg from "../../images/avatars/consultant.png";
 
 const Profile = ({ user }) => {
-  const setProfileImg = () => {
-    let src = null;
-    if (user.nombre_rol === "Productor") {
-      src = ProducerImg;
-    }
-    if (user.nombre_rol === "Transportista") {
-      src = DriverImg;
-    }
-    if (user.nombre_rol === "Consultor") {
-      src = ConsultantImg;
-    }
-    return src;
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.avatarContainer}>

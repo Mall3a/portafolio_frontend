@@ -19,20 +19,6 @@ import Quality from "../common/Quality";
 import DeleteProduct from "./DeleteProduct";
 import UpdateProduct from "./UpdateProduct";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  display: "flex",
-  flexDirection: "column",
-};
-
 const Products = ({ user }) => {
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -145,6 +131,7 @@ const Products = ({ user }) => {
                           <img
                             src={row.imagen}
                             style={{ width: 50, height: 50 }}
+                            alt="fruit"
                           />
                         </TableCell>
                         <TableCell component="th" scope="row" align="right">

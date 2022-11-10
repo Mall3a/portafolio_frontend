@@ -472,16 +472,6 @@ const OrderRequestForm = ({
                         </TableCell>
                         <TableCell align="right">{row.cantidad} kg</TableCell>
 
-                        {/**<TableCell align="right">
-                            <IconButton
-                              edge="start"
-                              color="inherit"
-                              //onClick={() => handleUpdateProduct(row)}
-                              style={{ alignSelf: "end", color: "#1976d2" }}
-                            >
-                              <Edit />
-                            </IconButton>
-                        </TableCell>*/}
                         <TableCell align="right">
                           <IconButton
                             edge="start"

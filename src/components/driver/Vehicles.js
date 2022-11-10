@@ -24,20 +24,6 @@ import AddVehicle from "./AddVehicle";
 import DeleteVehicle from "./DeleteVehicle";
 import UpdateVehicle from "./UpdateVehicle";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  display: "flex",
-  flexDirection: "column",
-};
-
 const Vehicles = ({ user }) => {
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -130,6 +116,7 @@ const Vehicles = ({ user }) => {
                           <img
                             style={{ width: "200px" }}
                             src={row.imagen}
+                            alt="vehicle"
                           ></img>
                         </TableCell>
                         <TableCell component="th" scope="row" align="right">
