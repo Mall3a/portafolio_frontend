@@ -528,22 +528,44 @@ const OrderRequestForm = ({
               ) : (
                 <form onSubmit={handleAgregarProducto}>
                   <div className={styles.modalFormContainer}>
-                    <FormControl fullWidth>
-                      <InputLabel>Productos</InputLabel>
-                      <Select
-                        value={selectedProductId}
-                        label="Productos"
-                        onChange={handleChange}
-                      >
-                        {productos.map((producto) => {
-                          return (
-                            <MenuItem key={producto.id} value={producto.id}>
-                              {producto.nombre_producto}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 20,
+                      }}
+                    >
+                      {productos && productos.length > 1 && (
+                        <img
+                          src={
+                            productos.find(
+                              (producto) => producto.id === selectedProductId
+                            ).imagen
+                          }
+                          alt="fruit"
+                          style={{ width: 50, height: 50 }}
+                        />
+                      )}
+                      <FormControl fullWidth>
+                        <InputLabel>Productos</InputLabel>
+
+                        <Select
+                          value={selectedProductId}
+                          label="Productos"
+                          onChange={handleChange}
+                          style={{ width: 200 }}
+                        >
+                          {productos.map((producto) => {
+                            return (
+                              <MenuItem key={producto.id} value={producto.id}>
+                                {producto.nombre_producto}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </div>
 
                     <FormControl variant="outlined" style={{ width: "200px" }}>
                       <InputLabel>Cantidad</InputLabel>
