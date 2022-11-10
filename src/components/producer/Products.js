@@ -28,6 +28,7 @@ const Products = ({ user }) => {
   let [toggleUpdateProductModal, setToggleUpdateProductModal] = useState(false);
   let [selectedProduct, setSelectedProduct] = useState({
     id: null,
+    image: "",
     name: "",
     price: 0,
     quality: 0,
@@ -66,6 +67,7 @@ const Products = ({ user }) => {
 
   const handleUpdateProduct = ({
     id,
+    imagen,
     nombre_producto,
     precio,
     cantidad,
@@ -75,6 +77,7 @@ const Products = ({ user }) => {
     setToggleUpdateProductModal(true);
     setSelectedProduct({
       id: id,
+      image: imagen,
       name: nombre_producto,
       price: precio,
       quantity: cantidad,

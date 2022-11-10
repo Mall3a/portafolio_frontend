@@ -154,11 +154,26 @@ const UpdateProduct = ({
 
         <form onSubmit={handleEditarProducto}>
           <div className={styles.formContainer}>
-            <TextField
-              disabled={true}
-              label="Producto"
-              value={selectedProduct.name}
-            ></TextField>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 20,
+              }}
+            >
+              <img
+                src={selectedProduct.image}
+                alt="fruit"
+                style={{ width: 50, height: 50 }}
+              />
+
+              <TextField
+                disabled={true}
+                label="Producto"
+                value={selectedProduct.name}
+              ></TextField>
+            </div>
             <NumberFormatBase
               style={{ width: "200px" }}
               format={format}
