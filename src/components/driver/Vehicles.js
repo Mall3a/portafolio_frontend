@@ -19,8 +19,7 @@ import {
   CloseSharp,
 } from "@mui/icons-material";
 import { getTransportesTransportista } from "../../api/driverApis";
-import FurgonImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-furgon.jpg";
-import BarandaMetalAltaImg from "../../images/vehicles/fuso-productos-camiones-fa-chasis-baranda-metal-alta.jpg";
+
 import AddVehicle from "./AddVehicle";
 import DeleteVehicle from "./DeleteVehicle";
 import UpdateVehicle from "./UpdateVehicle";

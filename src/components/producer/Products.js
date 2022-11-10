@@ -16,7 +16,6 @@ import AddProduct from "./AddProduct";
 import { IconButton } from "@mui/material";
 import { DeleteForever, Edit } from "@mui/icons-material";
 import Quality from "../common/Quality";
-import ProductImage from "./ProductImage";
 import DeleteProduct from "./DeleteProduct";
 import UpdateProduct from "./UpdateProduct";
 
