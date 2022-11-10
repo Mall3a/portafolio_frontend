@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  Modal,
   Paper,
   Table,
   TableBody,
@@ -17,15 +18,49 @@ import {
 import { Box } from "@mui/system";
 import styles from "./OrderRequests.module.scss";
 import Title from "../common/Title";
-import { getSolicitudesPedidos } from "../../api/clientApis";
+import {
+  getDetalleSolicitudPedido,
+  getSolicitudesPedidos,
+} from "../../api/clientApis";
 import moment from "moment";
-import { PanoramaFishEye, Search, Visibility } from "@mui/icons-material";
+import {
+  Close,
+  PanoramaFishEye,
+  Search,
+  Visibility,
+} from "@mui/icons-material";
+import Quality from "../common/Quality";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
 
 const OrderRequests = ({ user }) => {
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [solicitudes, setSolicitudes] = useState([]);
   const [showOrderRequestForm, setShowOrderRequestForm] = useState(false);
+
+  const [productosSolicitud, setProductosSolicitud] = useState([]);
+  const [loadingProductosSolicitud, setLoadingProductosSolicitud] =
+    useState(false);
+  const [hasErrorProductosSolicitud, setHasErrorProductosSolicitud] =
+    useState(false);
+  const [errorMessageProductosSolicitud, setErrorMessageProductosSolicitud] =
+    useState("");
+
+  const [toggleProductDetailModal, setToggleProductDetailModal] =
+    useState(false);
 
   const handleCrearSolicitud = () => {
     setShowOrderRequestForm(true);
@@ -43,18 +78,46 @@ const OrderRequests = ({ user }) => {
     const data = response.data;
 
     if (response.status === 200) {
-      if (data.solicitud_pedido_usuario.length > 0) {
-        setSolicitudes(data.solicitud_pedido_usuario);
-      } else {
-        setSolicitudes(data.solicitud_pedido_usuario);
-        setHasError(false);
-      }
+      setSolicitudes(data.solicitud_pedido_usuario);
+      setHasError(false);
       setLoading(false);
     } else {
       setHasError(true);
       setLoading(false);
     }
   };
+
+  const getOrderRequestDetail = async (row) => {
+    setLoadingProductosSolicitud(true);
+    setHasErrorProductosSolicitud(false);
+    setErrorMessageProductosSolicitud("");
+
+    const response = await getDetalleSolicitudPedido(row.id);
+    const data = response.data;
+    if (response.status === 200) {
+      setProductosSolicitud(data.detalles_solicitud_pedido);
+      setLoadingProductosSolicitud(false);
+    } else {
+      setHasErrorProductosSolicitud(true);
+      setErrorMessageProductosSolicitud(
+        "Error al obtener productos del sistema"
+      );
+      setLoadingProductosSolicitud(false);
+    }
+  };
+
+  const handleViewDetail = (row) => {
+    setToggleProductDetailModal(true);
+    getOrderRequestDetail(row);
+  };
+
+  const handleCloseModal = () => {
+    setLoadingProductosSolicitud(true);
+    setHasErrorProductosSolicitud(false);
+    setErrorMessageProductosSolicitud("");
+    setToggleProductDetailModal(false);
+  };
+
   return (
     <>
       {showOrderRequestForm ? (
@@ -75,77 +138,155 @@ const OrderRequests = ({ user }) => {
               <CircularProgress />
             </Box>
           ) : (
-            <Grid item xs={12}>
-              <div className={styles.buttonContainer}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleCrearSolicitud}
-                >
-                  Crear Solicitud
-                </Button>
-              </div>
-              {solicitudes.length > 0 ? (
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <React.Fragment>
-                    <Title>Historial Solicitudes</Title>
-                    <Table size="large">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center">Fecha</TableCell>
-                          <TableCell align="center">Dirección</TableCell>
-                          <TableCell align="center">Estado</TableCell>
-                          <TableCell align="center">Detalle</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {solicitudes.map((row, index) => (
-                          <TableRow
-                            key={index}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell
-                              component="th"
-                              scope="row"
-                              align="center"
-                            >
-                              {moment(row.fecha).format("MM/DD/YYYY")}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.direccion}
-                            </TableCell>
-                            <TableCell align="center">
-                              <Chip label={row.estado} color="warning" />
-                            </TableCell>
-                            <TableCell align="center">
-                              <IconButton
-                                edge="start"
-                                color="inherit"
-                                //onClick={() => handleDeleteProduct(row)}
-                                style={{ alignSelf: "end", color: "#1976d2" }}
-                              >
-                                <Search />
-                              </IconButton>
-                            </TableCell>
+            <>
+              <Grid item xs={12}>
+                <div className={styles.buttonContainer}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCrearSolicitud}
+                  >
+                    Crear Solicitud
+                  </Button>
+                </div>
+                {solicitudes.length > 0 ? (
+                  <Paper
+                    sx={{ p: 2, display: "flex", flexDirection: "column" }}
+                  >
+                    <React.Fragment>
+                      <Title>Historial Solicitudes</Title>
+                      <Table size="large">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">Fecha</TableCell>
+                            <TableCell align="center">Dirección</TableCell>
+                            <TableCell align="center">Estado</TableCell>
+                            <TableCell align="center">Detalle</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </React.Fragment>
-                </Paper>
-              ) : hasError ? (
-                <Alert severity="error">
-                  Ha ocurrido un error al intentar obtener la lista de
-                  solicitudes
-                </Alert>
-              ) : (
-                <Alert severity="info">
-                  Cree una solicitud para visualizarla en ésta área
-                </Alert>
+                        </TableHead>
+                        <TableBody>
+                          {solicitudes.map((row, index) => (
+                            <TableRow
+                              key={index}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                align="center"
+                              >
+                                {moment(row.fecha).format("MM/DD/YYYY")}
+                              </TableCell>
+                              <TableCell align="center">
+                                {row.direccion}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Chip label={row.estado} color="warning" />
+                              </TableCell>
+                              <TableCell align="center">
+                                <IconButton
+                                  edge="start"
+                                  color="inherit"
+                                  onClick={() => handleViewDetail(row)}
+                                  style={{ alignSelf: "end", color: "#1976d2" }}
+                                >
+                                  <Search />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </React.Fragment>
+                  </Paper>
+                ) : hasError ? (
+                  <Alert severity="error">
+                    Ha ocurrido un error al intentar obtener la lista de
+                    solicitudes
+                  </Alert>
+                ) : (
+                  <Alert severity="info">
+                    Cree una solicitud para visualizarla en ésta área
+                  </Alert>
+                )}
+              </Grid>
+              {toggleProductDetailModal && (
+                <Modal open={toggleProductDetailModal} disableEscapeKeyDown>
+                  <Box sx={style}>
+                    <div className={styles.modalTitleContainer}>
+                      <Title>Detalle de productos de la solicitud</Title>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleCloseModal}
+                        style={{ alignSelf: "end" }}
+                      >
+                        <Close />
+                      </IconButton>
+                    </div>
+
+                    {loadingProductosSolicitud ? (
+                      <Box className={styles.loadingContainer}>
+                        <CircularProgress />
+                      </Box>
+                    ) : productosSolicitud.length > 0 ? (
+                      <Paper
+                        sx={{ p: 2, display: "flex", flexDirection: "column" }}
+                      >
+                        <React.Fragment>
+                          <Title>Productos</Title>
+                          <Table size="large">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="right">Nombre</TableCell>
+                                <TableCell align="center">Calidad</TableCell>
+                                <TableCell align="right">
+                                  Cantidad&nbsp;(kg)
+                                </TableCell>
+
+                                <TableCell align="right">Eliminar</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {productosSolicitud.map((row, index) => (
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    align="right"
+                                  >
+                                    {row.nombre_producto}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    <Quality value={row.calidad} readOnly />
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {row.cantidad} kg
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </React.Fragment>
+                      </Paper>
+                    ) : (
+                      <Alert severity="info">Solicitud sin productos</Alert>
+                    )}
+                  </Box>
+                </Modal>
               )}
-            </Grid>
+            </>
           )}
         </>
       )}

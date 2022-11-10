@@ -246,7 +246,7 @@ const OrderRequestForm = ({
       //debe ingresar los valores
       setOrderRequestLoading(false);
       setOrderRequestHasError(true);
-      setOrderRequestErrorMessage("debe ingresar los valores");
+      setOrderRequestErrorMessage("debe ingresar los valores de los inputs");
     }
   };
 
