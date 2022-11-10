@@ -60,9 +60,9 @@ const OrderRequests = ({ user }) => {
       {showOrderRequestForm ? (
         <OrderRequestForm
           user={user}
-          setShowOrderRequestForm={(e) => {
-            if (e === false) {
-              setShowOrderRequestForm(e);
+          setShowOrderRequestForm={(e, button) => {
+            setShowOrderRequestForm(e);
+            if (button === "create") {
               getClientOrderRequests();
             }
           }}

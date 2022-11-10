@@ -22,6 +22,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
 import React, { useEffect, useState } from "react";
 import styles from "./OrderRequestForm.module.scss";
 import moment from "moment";
@@ -33,6 +34,7 @@ import { getProductos } from "../../api/producerApis";
 import { insertSolicitudPedido, validateAddress } from "../../api/clientApis";
 import { color } from "@mui/system";
 import { countries } from "../../api/MockData";
+import { LoadingButton } from "@mui/lab";
 
 const style = {
   position: "absolute",
@@ -81,6 +83,11 @@ const OrderRequestForm = ({
   let [toggleDeleteProductModal, setToggleDeleteProductModal] = useState(false);
   let [toggleUpdateProductModal, setToggleUpdateProductModal] = useState(false);
   let [selectedProductId, setSelectedProductId] = useState(1);
+
+  let [orderRequestLoading, setOrderRequestLoading] = useState(false);
+  let [orderRequestHasError, setOrderRequestHasError] = useState(false);
+  let [orderRequestErrorMessage, setOrderRequestErrorMessage] = useState(false);
+
   const handleAddProduct = () => {
     setToggleAddProductModal(true);
   };
@@ -195,7 +202,9 @@ const OrderRequestForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setOrderRequestLoading(true);
+    setOrderRequestHasError(false);
+    setOrderRequestErrorMessage("");
     const detalle = productosCliente.map((producto) => {
       return {
         producto_id: producto.idProducto,
@@ -206,26 +215,38 @@ const OrderRequestForm = ({
 
     const direccionCompleta = `${direccion}, ${ciudad}, ${estado}, ${pais}, ${codigoPostal}`;
 
-    if (detalle.length > 0 && completeAddress && rut) {
+    if (
+      detalle.length > 0 &&
+      direccion &&
+      ciudad &&
+      estado &&
+      pais &&
+      codigoPostal &&
+      rut
+    ) {
       const response = await insertSolicitudPedido(
         rut,
-        completeAddress,
+        direccionCompleta,
         detalle
       );
-      const { data } = response.data;
+
       if (response.status === 200) {
-        if (data) {
-          console.log(data);
-          setShowOrderRequestForm(false);
-          //trigger order requests
-        } else {
-          //fallo al crear la solicitd
-        }
+        //trigger order requests
+        setShowOrderRequestForm(false, "create");
+        setOrderRequestLoading(true);
+        setOrderRequestHasError(false);
+        setOrderRequestErrorMessage("");
       } else {
         //fallo del servicio
+        setOrderRequestLoading(false);
+        setOrderRequestHasError(true);
+        setOrderRequestErrorMessage("fallo del servicio");
       }
     } else {
       //debe ingresar los valores
+      setOrderRequestLoading(false);
+      setOrderRequestHasError(true);
+      setOrderRequestErrorMessage("debe ingresar los valores");
     }
   };
 
@@ -523,27 +544,50 @@ const OrderRequestForm = ({
         <Button
           variant="contained"
           color="error"
-          onClick={() => setShowOrderRequestForm(false)}
+          onClick={() => setShowOrderRequestForm(false, "cancel")}
         >
           Cancelar Solicitud
         </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={
-            !direccion ||
-            !ciudad ||
-            !estado ||
-            !pais ||
-            !codigoPostal ||
-            addressHasError ||
-            productosCliente.length < 1
-          }
-        >
-          Crear Solicitud
-        </Button>
+
+        {orderRequestLoading ? (
+          <LoadingButton
+            color="secondary"
+            loading={orderRequestLoading}
+            loadingPosition="start"
+            variant="contained"
+            startIcon={<LoginIcon />}
+            className={styles.loginButton}
+          >
+            Creando Solicitud
+          </LoadingButton>
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            disabled={
+              !direccion ||
+              !ciudad ||
+              !estado ||
+              !pais ||
+              !codigoPostal ||
+              addressHasError ||
+              productosCliente.length < 1
+            }
+          >
+            Crear Solicitud
+          </Button>
+        )}
+
+        {orderRequestHasError && orderRequestErrorMessage && (
+          <Alert
+            severity="error"
+            onClose={() => setOrderRequestErrorMessage("")}
+          >
+            {orderRequestErrorMessage}
+          </Alert>
+        )}
       </div>
     </Card>
   );
