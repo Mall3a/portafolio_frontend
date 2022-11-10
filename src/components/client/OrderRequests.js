@@ -180,7 +180,18 @@ const OrderRequests = ({ user }) => {
                                 {row.direccion}
                               </TableCell>
                               <TableCell align="center">
-                                <Chip label={row.estado} color="warning" />
+                                {row.estado === "Recibida" && (
+                                  <Chip label={row.estado} color="primary" />
+                                )}
+                                {row.estado === "En curso" && (
+                                  <Chip label={row.estado} color="warning" />
+                                )}
+                                {row.estado === "Rechazada" && (
+                                  <Chip label={row.estado} color="error" />
+                                )}
+                                {row.estado === "Aprobada" && (
+                                  <Chip label={row.estado} color="success" />
+                                )}
                               </TableCell>
                               <TableCell align="center">
                                 <IconButton
