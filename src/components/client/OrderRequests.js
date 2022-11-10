@@ -57,6 +57,8 @@ const OrderRequests = ({ user }) => {
   const [toggleProductDetailModal, setToggleProductDetailModal] =
     useState(false);
 
+  const [rejectedReason, setRejectedReason] = useState("false");
+
   const handleCrearSolicitud = () => {
     setShowOrderRequestForm(true);
   };
@@ -102,11 +104,15 @@ const OrderRequests = ({ user }) => {
   };
 
   const handleViewDetail = (row) => {
+    if (row.estado === "Rechazada") {
+      setRejectedReason(row.nota);
+    }
     setToggleProductDetailModal(true);
     getOrderRequestDetail(row);
   };
 
   const handleCloseModal = () => {
+    setRejectedReason("");
     setLoadingProductosSolicitud(true);
     setHasErrorProductosSolicitud(false);
     setErrorMessageProductosSolicitud("");
@@ -303,6 +309,11 @@ const OrderRequests = ({ user }) => {
                       </Alert>
                     ) : (
                       <Alert severity="info">Solicitud sin productos</Alert>
+                    )}
+                    {rejectedReason && (
+                      <Alert severity="error" style={{ marginTop: 10 }}>
+                        {rejectedReason}
+                      </Alert>
                     )}
                   </Box>
                 </Modal>
