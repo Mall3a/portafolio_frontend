@@ -143,7 +143,10 @@ const Products = ({ user }) => {
                         }}
                       >
                         <TableCell component="th" scope="row" align="center">
-                          <ProductImage productName={row.nombre_producto} />
+                          <img
+                            src={row.imagen}
+                            style={{ width: 50, height: 50 }}
+                          />
                         </TableCell>
                         <TableCell component="th" scope="row" align="right">
                           {row.nombre_producto}
