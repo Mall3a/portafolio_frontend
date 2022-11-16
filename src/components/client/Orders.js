@@ -155,7 +155,7 @@ const Orders = ({ user }) => {
                           Transportista Asignado
                         </TableCell>
                         <TableCell align="center">Valor Total Pedido</TableCell>
-                        <TableCell align="center">Detalle</TableCell>
+                        <TableCell align="center">Detalle Pedido</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>

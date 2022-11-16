@@ -9,3 +9,9 @@ export const login = async (user, password) => {
     p_pass: password,
   });
 };
+
+export const getContratoUsuario = async (rut) => {
+  return await axios.post(API_URL + "sp_get_contrato_usuario/", {
+    in_rut: rut,
+  });
+};

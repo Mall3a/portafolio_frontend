@@ -6,7 +6,7 @@ import Logo from "../../images/logos/logo.svg";
 // This is a React Router v6 app
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { login } from "../../api/loginApi.js";
+import { getContratoUsuario, login } from "../../api/loginApi.js";
 import {
   Alert,
   FormControl,
@@ -18,6 +18,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import LoginIcon from "@mui/icons-material/Login";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import moment from "moment";
 
 const Login = () => {
   let [showPass, setShowPass] = useState(false);
@@ -29,6 +30,7 @@ const Login = () => {
 
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
+
   let [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -42,19 +44,61 @@ const Login = () => {
 
       if (response.status === 200) {
         if (data.usuario.length === 1) {
-          //Usuario no es Administrador
+          //Usuario es Administrador
           if (data.usuario[0].rol_id !== 1) {
-            const token = data.usuario[0];
-            setAuth({
-              token,
-            });
-            navigate("/home");
-            localStorage.setItem("token", JSON.stringify(token));
+            //Validar contrato vigente del usuario
+            const responseContrato = await getContratoUsuario(user);
+            const dataContrato = responseContrato.data;
+            if (responseContrato.status === 200) {
+              if (dataContrato.contrato && dataContrato.contrato.length > 0) {
+                const contrato = dataContrato.contrato[0];
+                //validar contrato vigente para productores
+                if (data.usuario[0].rol_id === 4) {
+                  if (moment().diff(contrato.fecha_fin, "days") < 0) {
+                    const token = data.usuario[0];
+                    setAuth({
+                      token,
+                    });
+                    navigate("/home");
+                    localStorage.setItem("token", JSON.stringify(token));
+                    setHasError(false);
+                    setLoading(false);
+                  } else {
+                    setHasError(true);
+                    setLoading(false);
+                    setErrorMessage(
+                      "Su contrato no está vigente. Contáctese con el administrador para renovar su contrato"
+                    );
+                  }
+                } else {
+                  //no es necesario validar información de contrato ya que no es productor
+                  const token = data.usuario[0];
+                  setAuth({
+                    token,
+                  });
+                  navigate("/home");
+                  localStorage.setItem("token", JSON.stringify(token));
+                  setHasError(false);
+                  setLoading(false);
+                }
+              } else {
+                setHasError(true);
+                setLoading(false);
+                setErrorMessage(
+                  "No se ha encontrado información de contrato del usuario"
+                );
+              }
+            } else {
+              setHasError(true);
+              setLoading(false);
+              setErrorMessage(
+                "El servicio para obtener información de contrato del usuario ha fallado"
+              );
+            }
           } else {
             setErrorMessage(
               "Usuario administrador debe ingresar por la aplicación de escritorio"
             );
-
             setHasError(true);
             setLoading(false);
           }
@@ -134,7 +178,7 @@ const Login = () => {
             Inciar Sesión
           </Button>
         )}
-        {errorMessage && (
+        {hasError && errorMessage && (
           <Alert severity="error" onClose={() => setErrorMessage("")}>
             {errorMessage}
           </Alert>

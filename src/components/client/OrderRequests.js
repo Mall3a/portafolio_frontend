@@ -159,10 +159,19 @@ const OrderRequests = ({ user }) => {
                       <Table size="large">
                         <TableHead>
                           <TableRow>
-                            <TableCell align="center">Fecha</TableCell>
-                            <TableCell align="center">Dirección</TableCell>
-                            <TableCell align="center">Estado</TableCell>
-                            <TableCell align="center">Detalle</TableCell>
+                            <TableCell align="center">ID Solicitud</TableCell>
+                            <TableCell align="center">
+                              Fecha Solicitud
+                            </TableCell>
+                            <TableCell align="center">
+                              Dirección Destino
+                            </TableCell>
+                            <TableCell align="center">
+                              Estado Solicitud
+                            </TableCell>
+                            <TableCell align="center">
+                              Detalle Solicitud
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -175,6 +184,13 @@ const OrderRequests = ({ user }) => {
                                 },
                               }}
                             >
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                align="center"
+                              >
+                                {row.id}
+                              </TableCell>
                               <TableCell
                                 component="th"
                                 scope="row"
