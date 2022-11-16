@@ -42,6 +42,12 @@ const SoldProductsReports = () => {
     getProductosVendidos();
   }, []);
 
+  const precioMaximo = useMemo(
+    () =>
+      productosVendidos.reduce((acc, curr) => Math.max(acc, curr.precio), 0),
+    [productosVendidos]
+  );
+
   const columns = useMemo(
     () => [
       {
@@ -91,13 +97,26 @@ const SoldProductsReports = () => {
             })}
           </>
         ),
+        Footer: () => (
+          <Stack>
+            Precio máximo
+            <Box color="warning.main">
+              {Math.round(precioMaximo)?.toLocaleString?.("es-CL", {
+                style: "currency",
+                currency: "CLP",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </Box>
+          </Stack>
+        ),
       },
       {
         header: "RUT Productor",
         accessorKey: "productor_rut",
       },
     ],
-    []
+    [precioMaximo]
   );
   const csvOptions = {
     fieldSeparator: ",",
