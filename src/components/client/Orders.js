@@ -330,7 +330,13 @@ const Orders = ({ user }) => {
                                 {format(row.total_sin_ganancia)}
                               </TableCell>
                               <TableCell align="right">
-                                {row.porcentaje_ganancia}
+                                {Number(row.porcentaje_ganancia).toLocaleString(
+                                  undefined,
+                                  {
+                                    style: "percent",
+                                    minimumFractionDigits: 0,
+                                  }
+                                )}
                               </TableCell>
                               <TableCell align="right">
                                 {format(row.ganancia)}
