@@ -57,7 +57,7 @@ const OrderRequests = ({ user }) => {
   const [toggleProductDetailModal, setToggleProductDetailModal] =
     useState(false);
 
-  const [rejectedReason, setRejectedReason] = useState("false");
+  const [rejectedReason, setRejectedReason] = useState("");
 
   const handleCrearSolicitud = () => {
     setShowOrderRequestForm(true);

@@ -4,7 +4,7 @@ const API_URL =
   "https://g15f555dd431949-maipograndebdd.adb.sa-santiago-1.oraclecloudapps.com/ords/Portafolio/";
 
 export const getProductos = async () => {
-  return await axios.post(API_URL + "sp_get_all_productos/", );
+  return await axios.post(API_URL + "sp_get_all_productos/");
 };
 
 export const getProductosProductor = async (id) => {
@@ -36,21 +36,29 @@ export const updateProductoProductor = async (
   cantidad
 ) => {
   return await axios.post(API_URL + "sp_update_producto_productor/", {
-  in_id_pp: idProductoProductor,
-  in_precio: precio,
-  in_calidad: calidad,
-  in_cantidad: cantidad
+    in_id_pp: idProductoProductor,
+    in_precio: precio,
+    in_calidad: calidad,
+    in_cantidad: cantidad,
   });
 };
 
-export const deleteProductoProductor = async (
-  idProductoProductor
-) => {
+export const deleteProductoProductor = async (idProductoProductor) => {
   return await axios.post(API_URL + "sp_delete_producto_productor/", {
-  in_id_pp: idProductoProductor
+    in_id_pp: idProductoProductor,
   });
 };
 
-
-
-
+export const checkProductoProductor = async (
+  idProductoProductor,
+  calidad,
+  cantidad,
+  rut
+) => {
+  return await axios.post(API_URL + "sp_producto_productor_checker/", {
+    in_id_producto: idProductoProductor,
+    in_calidad: calidad,
+    in_cantidad: cantidad,
+    in_productor_rut: rut,
+  });
+};

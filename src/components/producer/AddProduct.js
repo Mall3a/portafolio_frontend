@@ -1,6 +1,10 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { addProductoProductor, getProductos } from "../../api/producerApis.js";
+import {
+  addProductoProductor,
+  checkProductoProductor,
+  getProductos,
+} from "../../api/producerApis.js";
 import React, { useEffect, useState } from "react";
 import {
   CircularProgress,
@@ -112,27 +116,42 @@ const AddProduct = ({
 
     if (precio && cantidad) {
       if (precio.value >= 1 && cantidad >= 1) {
-        const response = await addProductoProductor(
+        const responseCheckProducto = await checkProductoProductor(
           selectedProductId,
-          precio.value,
           calidad,
           cantidad,
           rut
         );
-        const data = response.data;
-        if (response.status === 200) {
-          if (data.out_mensaje_salida === "PRODUCTO CREADO CORRECTAMENTE") {
-            setSuccess(true);
-            setSuccessMessage("Producto agregado exitosamente");
+        const data = responseCheckProducto.data;
+        if (responseCheckProducto.status === 200) {
+          if (data.producto_productor_checker.length < 1) {
+            const response = await addProductoProductor(
+              selectedProductId,
+              precio.value,
+              calidad,
+              cantidad,
+              rut
+            );
+            const data = response.data;
+            if (response.status === 200) {
+              if (data.out_mensaje_salida === "PRODUCTO CREADO CORRECTAMENTE") {
+                setSuccess(true);
+                setSuccessMessage("Producto agregado exitosamente");
+              } else {
+                setErrorMessage("Ha ocurrido un error al agregar el producto");
+                setHasError(true);
+              }
+              setLoadingInsertProduct(false);
+            } else {
+              setHasError(true);
+              setLoadingInsertProduct(false);
+              setErrorMessage("El servicio para agregar productos ha fallado");
+            }
           } else {
-            setErrorMessage("Ha ocurrido un error al agregar el producto");
             setHasError(true);
+            setLoadingInsertProduct(false);
+            setErrorMessage("Producto ya existe en sistema");
           }
-          setLoadingInsertProduct(false);
-        } else {
-          setHasError(true);
-          setLoadingInsertProduct(false);
-          setErrorMessage("El servicio para agregar productos ha fallado");
         }
       } else {
         setHasError(true);

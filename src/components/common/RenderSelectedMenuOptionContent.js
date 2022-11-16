@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import Auctions from "../driver/Auctions";
-import Orders from "../common/Orders";
+import Orders from "../client/Orders";
 
 import Products from "../producer/Products";
 import Profile from "../common/Profile";
