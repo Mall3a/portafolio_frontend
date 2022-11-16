@@ -19,6 +19,8 @@ import styles from "./Orders.module.scss";
 import Title from "../common/Title";
 import {
   getDetalleSolicitudPedido,
+  getDetallesPedidoUsuario,
+  getPedidosUsuario,
   getSolicitudesPedidos,
 } from "../../api/clientApis";
 import moment from "moment";
@@ -30,7 +32,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
+  width: 1200,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -55,7 +57,7 @@ const Orders = ({ user }) => {
   const [toggleProductDetailModal, setToggleProductDetailModal] =
     useState(false);
 
-  const [rejectedReason, setRejectedReason] = useState("false");
+  const [rejectedReason, setRejectedReason] = useState("");
 
   useEffect(() => {
     getClientOrders();
@@ -65,11 +67,12 @@ const Orders = ({ user }) => {
     setLoading(true);
     setHasError(false);
 
-    const response = await getSolicitudesPedidos(user.rut);
+    const response = await getPedidosUsuario(user.rut);
     const data = response.data;
 
     if (response.status === 200) {
-      setSolicitudes(data.solicitud_pedido_usuario);
+      setSolicitudes(data.pedido_usuario);
+
       setHasError(false);
       setLoading(false);
     } else {
@@ -83,10 +86,10 @@ const Orders = ({ user }) => {
     setHasErrorProductosSolicitud(false);
     setErrorMessageProductosSolicitud("");
 
-    const response = await getDetalleSolicitudPedido(row.id);
+    const response = await getDetallesPedidoUsuario(row.pedido_id);
     const data = response.data;
     if (response.status === 200) {
-      setProductosSolicitud(data.detalles_solicitud_pedido);
+      setProductosSolicitud(data.detalles_pedido);
       setLoadingProductosSolicitud(false);
     } else {
       setHasErrorProductosSolicitud(true);
@@ -96,6 +99,10 @@ const Orders = ({ user }) => {
       setLoadingProductosSolicitud(false);
     }
   };
+
+  useEffect(() => {
+    console.log(productosSolicitud);
+  }, [productosSolicitud]);
 
   const handleViewDetail = (row) => {
     if (row.estado === "Rechazada") {
@@ -113,6 +120,15 @@ const Orders = ({ user }) => {
     setToggleProductDetailModal(false);
   };
 
+  const format = (numStr) => {
+    if (numStr === "") return "";
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+      maximumFractionDigits: 0,
+    }).format(numStr);
+  };
+
   return (
     <>
       {loading ? (
@@ -125,13 +141,20 @@ const Orders = ({ user }) => {
             {solicitudes.length > 0 ? (
               <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                 <React.Fragment>
-                  <Title>Historial Solicitudes</Title>
+                  <Title>Historial Pedidos</Title>
                   <Table size="large">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Fecha</TableCell>
-                        <TableCell align="center">Dirección</TableCell>
-                        <TableCell align="center">Estado</TableCell>
+                        <TableCell align="center">ID Solicitud</TableCell>
+                        <TableCell align="center">Fecha Solicitud</TableCell>
+                        <TableCell align="center">ID Pedido</TableCell>
+                        <TableCell align="center">Fecha Pedido</TableCell>
+                        <TableCell align="center">Dirección Destino</TableCell>
+                        <TableCell align="center">Estado Pedido</TableCell>
+                        <TableCell align="center">
+                          Transportista Asignado
+                        </TableCell>
+                        <TableCell align="center">Valor Total Pedido</TableCell>
                         <TableCell align="center">Detalle</TableCell>
                       </TableRow>
                     </TableHead>
@@ -145,23 +168,50 @@ const Orders = ({ user }) => {
                             },
                           }}
                         >
+                          <TableCell align="center">
+                            {row.solicitud_id}
+                          </TableCell>
                           <TableCell component="th" scope="row" align="center">
-                            {moment(row.fecha).format("MM/DD/YYYY")}
+                            {moment(row.fecha_solicitud).format("MM/DD/YYYY")}
+                          </TableCell>
+                          <TableCell align="center">{row.pedido_id}</TableCell>
+                          <TableCell component="th" scope="row" align="center">
+                            {moment(row.fecha_pedido).format("MM/DD/YYYY")}
                           </TableCell>
                           <TableCell align="center">{row.direccion}</TableCell>
                           <TableCell align="center">
-                            {row.estado === "Recibida" && (
-                              <Chip label={row.estado} color="primary" />
+                            {row.estado_pedido_id === 1 && (
+                              <Chip label={row.estado_pedido} color="default" />
                             )}
-                            {row.estado === "En curso" && (
-                              <Chip label={row.estado} color="warning" />
+                            {row.estado_pedido_id === 2 && (
+                              <Chip label={row.estado_pedido} color="primary" />
                             )}
-                            {row.estado === "Rechazada" && (
-                              <Chip label={row.estado} color="error" />
+                            {row.estado_pedido_id === 3 && (
+                              <Chip label={row.estado_pedido} color="warning" />
                             )}
-                            {row.estado === "Aprobada" && (
-                              <Chip label={row.estado} color="success" />
+                            {row.estado_pedido_id === 4 && (
+                              <Chip label={row.estado_pedido} color="warning" />
                             )}
+                            {row.estado_pedido_id === 5 && (
+                              <Chip label={row.estado_pedido} color="warning" />
+                            )}
+                            {row.estado_pedido_id === 6 && (
+                              <Chip label={row.estado_pedido} color="info" />
+                            )}
+                            {row.estado_pedido_id === 7 && (
+                              <Chip label={row.estado_pedido} color="success" />
+                            )}
+                            {row.estado_pedido_id === 8 && (
+                              <Chip label={row.estado_pedido} color="error" />
+                            )}
+                          </TableCell>
+
+                          <TableCell align="center">
+                            {row.oferta_subasta_id === null &&
+                              "Asignación Pendiente"}
+                          </TableCell>
+                          <TableCell align="right">
+                            {format(row.total)}
                           </TableCell>
                           <TableCell align="center">
                             <IconButton
@@ -181,7 +231,7 @@ const Orders = ({ user }) => {
               </Paper>
             ) : hasError ? (
               <Alert severity="error">
-                Ha ocurrido un error al intentar obtener la lista de solicitudes
+                Ha ocurrido un error al intentar obtener la lista de pedidos
               </Alert>
             ) : (
               <Alert severity="info">
@@ -193,7 +243,7 @@ const Orders = ({ user }) => {
             <Modal open={toggleProductDetailModal} disableEscapeKeyDown>
               <Box sx={style}>
                 <div className={styles.modalTitleContainer}>
-                  <Title>Detalle de productos de la solicitud</Title>
+                  <Title>Detalle de productos del Pedido</Title>
                   <IconButton
                     edge="start"
                     color="inherit"
@@ -216,11 +266,19 @@ const Orders = ({ user }) => {
                       <Table size="large">
                         <TableHead>
                           <TableRow>
+                            <TableCell align="right">Productor</TableCell>
                             <TableCell align="right">Imagen</TableCell>
                             <TableCell align="right">Nombre</TableCell>
                             <TableCell align="center">Calidad</TableCell>
                             <TableCell align="right">
                               Cantidad&nbsp;(kg)
+                            </TableCell>
+                            <TableCell align="center">Precio</TableCell>
+                            <TableCell align="center">Total</TableCell>
+                            <TableCell align="center">% Comisión</TableCell>
+                            <TableCell align="center">Comisión</TableCell>
+                            <TableCell align="center">
+                              Total con Comisión
                             </TableCell>
                           </TableRow>
                         </TableHead>
@@ -234,6 +292,13 @@ const Orders = ({ user }) => {
                                 },
                               }}
                             >
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                align="center"
+                              >
+                                {row.productor_rut}
+                              </TableCell>
                               <TableCell
                                 component="th"
                                 scope="row"
@@ -258,6 +323,21 @@ const Orders = ({ user }) => {
                               <TableCell align="right">
                                 {row.cantidad} kg
                               </TableCell>
+                              <TableCell align="right">
+                                {format(row.precio)}
+                              </TableCell>
+                              <TableCell align="right">
+                                {format(row.total_sin_ganancia)}
+                              </TableCell>
+                              <TableCell align="right">
+                                {row.porcentaje_ganancia}
+                              </TableCell>
+                              <TableCell align="right">
+                                {format(row.ganancia)}
+                              </TableCell>
+                              <TableCell align="right">
+                                {format(row.total)}
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -269,7 +349,7 @@ const Orders = ({ user }) => {
                     {errorMessageProductosSolicitud}
                   </Alert>
                 ) : (
-                  <Alert severity="info">Solicitud sin productos</Alert>
+                  <Alert severity="info">Pedido sin productos</Alert>
                 )}
                 {rejectedReason && (
                   <Alert severity="error" style={{ marginTop: 10 }}>

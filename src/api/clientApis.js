@@ -92,3 +92,14 @@ export const getDetalleSolicitudPedido = async (id) => {
     in_id_solicitud_pedido: id,
   });
 };
+
+export const getPedidosUsuario = async (id) => {
+  return await axios.post(API_URL + "sp_get_all_pedidos_usuario/", {
+    in_rut: id,
+  });
+};
+export const getDetallesPedidoUsuario = async (idPedido) => {
+  return await axios.post(API_URL + "sp_get_detalle_pedido/", {
+    in_id_pedido: idPedido,
+  });
+};
