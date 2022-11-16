@@ -8,7 +8,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { ExportToCsv } from "export-to-csv";
 import moment from "moment";
 
-const Reports = () => {
+const OrdersReports = () => {
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -39,18 +39,7 @@ const Reports = () => {
 
   useEffect(() => {
     getAllOrders();
-    console.log(pedidos);
   }, []);
-
-  const averageSalary = useMemo(
-    () => data.reduce((acc, curr) => acc + curr.salary, 0) / data.length,
-    []
-  );
-
-  const maxTotal = useMemo(
-    () => data.reduce((acc, curr) => Math.max(acc, curr.total), 0),
-    []
-  );
 
   const columns = useMemo(
     () => [
@@ -114,19 +103,6 @@ const Reports = () => {
             })}
           </>
         ),
-        Footer: () => (
-          <Stack>
-            Total Promedio:
-            <Box color="warning.main">
-              {averageSalary?.toLocaleString?.("es-CL", {
-                style: "currency",
-                currency: "CLP",
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
-            </Box>
-          </Stack>
-        ),
       },
       {
         header: "Rut Cliente",
@@ -138,7 +114,7 @@ const Reports = () => {
         accessorKey: "direccion",
       },
     ],
-    [maxTotal]
+    []
   );
   const csvOptions = {
     fieldSeparator: ",",
@@ -230,4 +206,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default OrdersReports;

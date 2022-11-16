@@ -116,13 +116,22 @@ const RenderMenuOptions = observer(({ store, user }) => {
   const consultantMenu = (
     <React.Fragment>
       <ListItemButton
-        onClick={() => store.setSelectedMenuOption("Reportes")}
-        selected={store.selectedMenuOption === "Reportes"}
+        onClick={() => store.setSelectedMenuOption("Reportes de Productos")}
+        selected={store.selectedMenuOption === "Reportes de Productos"}
       >
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
-        <ListItemText primary="Reportes" />
+        <ListItemText primary="Reportes de Productos" />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => store.setSelectedMenuOption("Reportes de Pedidos")}
+        selected={store.selectedMenuOption === "Reportes de Pedidos"}
+      >
+        <ListItemIcon>
+          <BarChartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Reportes de Pedidos" />
       </ListItemButton>
     </React.Fragment>
   );

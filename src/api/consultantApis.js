@@ -6,3 +6,10 @@ const API_URL =
 export const getAllPedidos = async () => {
   return await axios.post(API_URL + "sp_get_all_pedidos/", {});
 };
+
+export const getAllSoldProducts = async () => {
+  return await axios.post(
+    API_URL + "sp_get_all_producto_productor_vendido/",
+    {}
+  );
+};
