@@ -6,6 +6,7 @@ import { getAllPedidos } from "../../api/consultantApis";
 import { Button } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { ExportToCsv } from "export-to-csv";
+import moment from "moment";
 
 const Reports = () => {
   const [loading, setLoading] = useState(false);
@@ -71,6 +72,7 @@ const Reports = () => {
       {
         header: "Fecha Pedido",
         accessorKey: "fecha_pedido",
+        Cell: ({ cell }) => <>{moment(cell.getValue()).format("MM/DD/YYYY")}</>,
       },
       /**
        {
@@ -155,7 +157,7 @@ const Reports = () => {
   };
 
   const handleExportData = () => {
-    csvExporter.generateCsv(data);
+    csvExporter.generateCsv(pedidos);
   };
 
   return loading ? (
@@ -189,7 +191,7 @@ const Reports = () => {
             startIcon={<FileDownloadIcon />}
             variant="contained"
           >
-            Export All Data
+            Exportar Todo
           </Button>
           <Button
             disabled={table.getPrePaginationRowModel().rows.length === 0}
@@ -200,7 +202,7 @@ const Reports = () => {
             startIcon={<FileDownloadIcon />}
             variant="contained"
           >
-            Export All Rows
+            Exportar todas las filas
           </Button>
           <Button
             disabled={table.getRowModel().rows.length === 0}
@@ -209,7 +211,7 @@ const Reports = () => {
             startIcon={<FileDownloadIcon />}
             variant="contained"
           >
-            Export Page Rows
+            Exportar las filas de la página
           </Button>
           <Button
             disabled={
@@ -220,7 +222,7 @@ const Reports = () => {
             startIcon={<FileDownloadIcon />}
             variant="contained"
           >
-            Export Selected Rows
+            Exportar filas seleccionadas
           </Button>
         </Box>
       )}

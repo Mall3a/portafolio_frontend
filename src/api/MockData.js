@@ -520,7 +520,7 @@ export type Person = {
   salary: number,
 };
 
-export const data: Person[] = [
+export const data = [
   {
     firstName: "Danika",
     lastName: "Rodriguez",
