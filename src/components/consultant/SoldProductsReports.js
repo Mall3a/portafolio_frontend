@@ -6,6 +6,7 @@ import { getAllSoldProducts } from "../../api/consultantApis";
 import { Button } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { ExportToCsv } from "export-to-csv";
+import Quality from "../common/Quality";
 
 const SoldProductsReports = () => {
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,13 @@ const SoldProductsReports = () => {
     getProductosVendidos();
   }, []);
 
+  const avgQuality = useMemo(
+    () =>
+      productosVendidos.reduce((acc, curr) => acc + curr.calidad, 0) /
+      data.length,
+    [productosVendidos]
+  );
+
   const precioMaximo = useMemo(
     () =>
       productosVendidos.reduce((acc, curr) => Math.max(acc, curr.precio), 0),
@@ -62,6 +70,16 @@ const SoldProductsReports = () => {
       {
         header: "Calidad Producto",
         accessorKey: "calidad",
+        //customize normal cell render on normal non-aggregated rows
+        Cell: ({ cell }) => (
+          <Quality value={cell.getValue()} readOnly onChange={() => {}} />
+        ),
+        Footer: () => (
+          <Stack>
+            Calidad promedio
+            <Box color="warning.main">{avgQuality}</Box>
+          </Stack>
+        ),
       },
       {
         header: "Cantidad Producto",
@@ -116,7 +134,7 @@ const SoldProductsReports = () => {
         accessorKey: "productor_rut",
       },
     ],
-    [precioMaximo]
+    [precioMaximo, avgQuality]
   );
   const csvOptions = {
     fieldSeparator: ",",
