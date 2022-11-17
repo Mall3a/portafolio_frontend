@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, CircularProgress, Stack } from "@mui/material";
+import { Box, Chip, CircularProgress, Stack } from "@mui/material";
 import MaterialReactTable from "material-react-table";
 import { data } from "../../api/MockData";
 import { getAllPedidos } from "../../api/consultantApis";
@@ -40,6 +40,10 @@ const OrdersReports = () => {
   useEffect(() => {
     getAllOrders();
   }, []);
+  const totalMaximo = useMemo(
+    () => pedidos.reduce((acc, curr) => Math.max(acc, curr.total), 0),
+    [pedidos]
+  );
 
   const columns = useMemo(
     () => [
@@ -57,6 +61,9 @@ const OrdersReports = () => {
       {
         header: "ID Oferta Subasta",
         accessorKey: "oferta_subasta_id",
+        Cell: ({ cell }) => (
+          <>{cell.getValue() === null && "Sin transportista asignado"}</>
+        ),
       },
       {
         header: "Fecha Pedido",
@@ -71,6 +78,13 @@ const OrdersReports = () => {
       */ {
         header: "Estado Pedido",
         accessorKey: "estado_pedido",
+        Cell: ({ cell }) => (
+          <>
+            {cell.getValue() === "En preparacion" && (
+              <Chip label={cell.getValue()} color="default" />
+            )}
+          </>
+        ),
       },
 
       {
@@ -103,6 +117,19 @@ const OrdersReports = () => {
             })}
           </>
         ),
+        Footer: () => (
+          <Stack>
+            Total máximo
+            <Box color="warning.main">
+              {Math.round(totalMaximo)?.toLocaleString?.("es-CL", {
+                style: "currency",
+                currency: "CLP",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </Box>
+          </Stack>
+        ),
       },
       {
         header: "Rut Cliente",
@@ -114,7 +141,7 @@ const OrdersReports = () => {
         accessorKey: "direccion",
       },
     ],
-    []
+    [totalMaximo]
   );
   const csvOptions = {
     fieldSeparator: ",",
