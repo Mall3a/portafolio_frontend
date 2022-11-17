@@ -148,7 +148,7 @@ const OrdersReports = () => {
       initialState={{
         density: "compact",
         expanded: true, //expand all groups by default
-        grouping: [], //an array of columns to group by by default (can be multiple)
+        grouping: ["usuario_id"], //an array of columns to group by by default (can be multiple)
         pagination: { pageIndex: 0, pageSize: 20 },
         sorting: [{ id: "total", desc: false }], //sort by state by default
       }}

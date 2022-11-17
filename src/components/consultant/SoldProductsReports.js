@@ -168,7 +168,7 @@ const SoldProductsReports = () => {
       initialState={{
         density: "compact",
         expanded: true, //expand all groups by default
-        grouping: [], //an array of columns to group by by default (can be multiple)
+        grouping: ["productor_rut"], //an array of columns to group by by default (can be multiple)
         pagination: { pageIndex: 0, pageSize: 20 },
         sorting: [{ id: "calidad", desc: false }], //sort by state by default
       }}
