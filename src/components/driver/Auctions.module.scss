@@ -18,6 +18,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding-bottom: 10px;
 }
 
 .buttonsContainer {
@@ -27,5 +28,7 @@
   align-content: center;
   justify-content: center;
   padding-bottom: 24px;
+  padding-top: 24px;
+
   gap: 20px;
 }

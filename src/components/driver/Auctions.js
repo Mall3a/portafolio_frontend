@@ -155,6 +155,11 @@ const Auctions = ({ user }) => {
   const handleCloseMakeOfferModal = () => {
     setToggleMakeOfferModal(false);
     setSelectedAuction(null);
+    setPrecio({
+      value: 0,
+      formattedValue: format(0),
+      floatValue: null,
+    });
   };
 
   const makeOffer = async (e) => {
@@ -498,7 +503,7 @@ const Auctions = ({ user }) => {
                       }}
                     />
                   </div>
-                  {successMessage && (
+                  {success && successMessage && (
                     <Alert
                       severity="success"
                       onClose={() => setSuccessMessage("")}
