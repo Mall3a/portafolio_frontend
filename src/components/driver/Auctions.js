@@ -224,6 +224,7 @@ const Auctions = ({ user }) => {
                               variant="contained"
                               onClick={() => console.log(row)}
                               startIcon={<AttachMoney />}
+                              disabled={row.oferta_subasta_id != null}
                             >
                               Hacer Oferta
                             </Button>
