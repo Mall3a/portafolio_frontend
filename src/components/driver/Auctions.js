@@ -256,11 +256,10 @@ const Auctions = ({ user }) => {
                           <TableCell component="th" scope="row" align="center">
                             {row.id}
                           </TableCell>
-                          <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                          ></TableCell>
+                          <TableCell component="th" scope="row" align="center">
+                            {" "}
+                            {moment(row.fecha).format("MM/DD/YYYY")}
+                          </TableCell>
                           <TableCell align="right">
                             {format(row.precio_piso)}
                           </TableCell>
