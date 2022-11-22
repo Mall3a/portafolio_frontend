@@ -58,14 +58,8 @@ export const getAllSubastas = async () => {
   return await axios.post(API_URL + "sp_get_all_subastas/");
 };
 
-export const insertOfertaSubasta = async (
-  transporteId,
-  rut,
-  subastaId,
-  valorOferta
-) => {
+export const insertOfertaSubasta = async (rut, subastaId, valorOferta) => {
   return await axios.post(API_URL + "sp_insert_oferta_subasta/", {
-    in_transporte_id: transporteId,
     in_usuario_id: rut,
     in_subasta_id: subastaId,
     in_valor_ofertado: valorOferta,

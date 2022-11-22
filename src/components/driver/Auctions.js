@@ -9,8 +9,8 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import styles from "./Vehicles.module.scss";
-import { Alert, Button, Chip, Modal } from "@mui/material";
+import styles from "./Auctions.module.scss";
+import { Alert, Button, Chip, Modal, TextField } from "@mui/material";
 import { IconButton } from "@mui/material";
 import {
   DeleteForever,
@@ -20,11 +20,50 @@ import {
   Search,
   Close,
   AttachMoney,
+  Save,
 } from "@mui/icons-material";
-import { getAllSubastas } from "../../api/driverApis";
+import { getAllSubastas, insertOfertaSubasta } from "../../api/driverApis";
 import moment from "moment";
 import { getDetallesPedidoUsuario } from "../../api/clientApis";
 import Quality from "../common/Quality";
+import { NumberFormatBase } from "react-number-format";
+import { LoadingButton } from "@mui/lab";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 1200,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+
+const styleMakeOfferModal = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+const format = (numStr) => {
+  if (numStr === "") return "";
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    maximumFractionDigits: 0,
+  }).format(numStr);
+};
 
 const Auctions = ({ user }) => {
   const [hasError, setHasError] = useState(false);
@@ -32,6 +71,32 @@ const Auctions = ({ user }) => {
   let [auctions, setAuctions] = useState([{}]);
 
   let [selectedAuction, setSelectedAuction] = useState();
+  const [productosSolicitud, setProductosSolicitud] = useState([]);
+  const [loadingProductosSolicitud, setLoadingProductosSolicitud] =
+    useState(false);
+  const [hasErrorProductosSolicitud, setHasErrorProductosSolicitud] =
+    useState(false);
+  const [errorMessageProductosSolicitud, setErrorMessageProductosSolicitud] =
+    useState("");
+
+  const [toggleProductDetailModal, setToggleProductDetailModal] =
+    useState(false);
+
+  const [toggleMakeOfferModal, setToggleMakeOfferModal] = useState(false);
+  const [loadingMakeOffer, setLoadingMakeOffer] = useState(false);
+
+  let [precio, setPrecio] = useState({
+    value: selectedAuction ? selectedAuction.precio_piso : 0,
+    formattedValue: selectedAuction
+      ? format(selectedAuction.precio_piso)
+      : format(0),
+    floatValue: null,
+  });
+
+  const [makeOfferHasError, setMakeOfferHasError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     getAuctions();
@@ -52,19 +117,6 @@ const Auctions = ({ user }) => {
     }
   };
 
-  const [productosSolicitud, setProductosSolicitud] = useState([]);
-  const [loadingProductosSolicitud, setLoadingProductosSolicitud] =
-    useState(false);
-  const [hasErrorProductosSolicitud, setHasErrorProductosSolicitud] =
-    useState(false);
-  const [errorMessageProductosSolicitud, setErrorMessageProductosSolicitud] =
-    useState("");
-
-  const [toggleProductDetailModal, setToggleProductDetailModal] =
-    useState(false);
-
-  const [rejectedReason, setRejectedReason] = useState("");
-
   const getOrderDetail = async (row) => {
     setLoadingProductosSolicitud(true);
     setHasErrorProductosSolicitud(false);
@@ -84,42 +136,75 @@ const Auctions = ({ user }) => {
     }
   };
 
-  const format = (numStr) => {
-    if (numStr === "") return "";
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      maximumFractionDigits: 0,
-    }).format(numStr);
-  };
-
   const handleViewDetail = (row) => {
-    if (row.estado === "Rechazada") {
-      setRejectedReason(row.nota);
-    }
     setToggleProductDetailModal(true);
     getOrderDetail(row);
   };
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 1200,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-    display: "flex",
-    flexDirection: "column",
+  const handleMakeOffer = (row) => {
+    setToggleMakeOfferModal(true);
+    setSelectedAuction(row);
   };
 
   const handleCloseModal = () => {
-    setRejectedReason("");
     setLoadingProductosSolicitud(true);
     setHasErrorProductosSolicitud(false);
     setErrorMessageProductosSolicitud("");
     setToggleProductDetailModal(false);
+  };
+
+  const handleCloseMakeOfferModal = () => {
+    setToggleMakeOfferModal(false);
+    setSelectedAuction(null);
+  };
+
+  const makeOffer = async (e) => {
+    e.preventDefault();
+    setLoadingMakeOffer(true);
+    setMakeOfferHasError(false);
+    setSuccess(false);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (precio) {
+      if (precio.value > selectedAuction.precio_piso) {
+        const response = await insertOfertaSubasta(
+          user.rut,
+          selectedAuction.id,
+          precio.value
+        );
+        const data = response.data;
+        if (response.status === 200) {
+          if (
+            data.out_mensaje_salida.includes(
+              "OFERTA SUBASTA CREADA CORRECTAMENTE"
+            )
+          ) {
+            setSuccess(true);
+            setSuccessMessage("Oferta creada exitosamente");
+          } else {
+            setErrorMessage(
+              "Ha ocurrido un error al realizar la oferta de subasta"
+            );
+            setMakeOfferHasError(true);
+          }
+          setLoadingMakeOffer(false);
+        } else {
+          setMakeOfferHasError(true);
+          setLoadingMakeOffer(false);
+          setErrorMessage("El servicio para editar transportes ha fallado");
+        }
+      } else {
+        setMakeOfferHasError(true);
+        setLoadingMakeOffer(false);
+        setErrorMessage(
+          "Precio debe ser mayor al precio inicial de la subasta"
+        );
+      }
+    } else {
+      setMakeOfferHasError(true);
+      setLoadingMakeOffer(false);
+      setErrorMessage("Debe ingresar valor de oferta");
+    }
   };
 
   return (
@@ -162,9 +247,11 @@ const Auctions = ({ user }) => {
                           <TableCell component="th" scope="row" align="center">
                             {row.id}
                           </TableCell>
-                          <TableCell component="th" scope="row" align="center">
-                            {moment(row.fecha).format("MM/DD/YYYY")}
-                          </TableCell>
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            align="center"
+                          ></TableCell>
                           <TableCell align="right">
                             {format(row.precio_piso)}
                           </TableCell>
@@ -222,7 +309,7 @@ const Auctions = ({ user }) => {
                             <Button
                               color="primary"
                               variant="contained"
-                              onClick={() => console.log(row)}
+                              onClick={() => handleMakeOffer(row)}
                               startIcon={<AttachMoney />}
                               disabled={row.oferta_subasta_id != null}
                             >
@@ -361,11 +448,93 @@ const Auctions = ({ user }) => {
                 ) : (
                   <Alert severity="info">Pedido sin productos</Alert>
                 )}
-                {rejectedReason && (
-                  <Alert severity="error" style={{ marginTop: 10 }}>
-                    {rejectedReason}
-                  </Alert>
-                )}
+              </Box>
+            </Modal>
+          )}
+          {toggleMakeOfferModal && (
+            <Modal open={toggleMakeOfferModal} disableEscapeKeyDown>
+              <Box sx={styleMakeOfferModal}>
+                <div className={styles.modalTitleContainer}>
+                  <Title>Hacer Oferta Subasta</Title>
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleCloseMakeOfferModal}
+                    style={{ alignSelf: "end" }}
+                  >
+                    <Close />
+                  </IconButton>
+                </div>
+                <form onSubmit={makeOffer}>
+                  <div className={styles.textFieldsContainer}>
+                    <TextField
+                      disabled={true}
+                      label="ID Subasta"
+                      value={selectedAuction.id}
+                    ></TextField>
+                    <TextField
+                      disabled={true}
+                      label="Fecha Subasta"
+                      value={moment(selectedAuction.fecha).format("MM/DD/YYYY")}
+                    ></TextField>
+                    <NumberFormatBase
+                      style={{ width: "200px" }}
+                      format={format}
+                      value={selectedAuction.precio_piso}
+                      customInput={TextField}
+                      prefix="$"
+                      label="Precio Inicial"
+                      disabled={true}
+                    />
+                    <NumberFormatBase
+                      style={{ width: "200px" }}
+                      format={format}
+                      value={precio.formattedValue}
+                      customInput={TextField}
+                      prefix="$"
+                      label="Valor Oferta"
+                      onValueChange={(values) => {
+                        setPrecio(values);
+                      }}
+                    />
+                  </div>
+                  {successMessage && (
+                    <Alert
+                      severity="success"
+                      onClose={() => setSuccessMessage("")}
+                    >
+                      {successMessage}
+                    </Alert>
+                  )}
+                  {makeOfferHasError && errorMessage && (
+                    <Alert severity="error" onClose={() => setErrorMessage("")}>
+                      {errorMessage}
+                    </Alert>
+                  )}
+                  <div className={styles.buttonsContainer}>
+                    {loadingMakeOffer ? (
+                      <LoadingButton
+                        color="secondary"
+                        loading={loadingMakeOffer}
+                        loadingPosition="start"
+                        variant="contained"
+                        startIcon={<Save />}
+                      >
+                        Hacer Oferta
+                      </LoadingButton>
+                    ) : (
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={styles.updateButton}
+                        disabled={!precio.value}
+                      >
+                        Hacer Oferta
+                      </Button>
+                    )}
+                  </div>
+                </form>
               </Box>
             </Modal>
           )}
