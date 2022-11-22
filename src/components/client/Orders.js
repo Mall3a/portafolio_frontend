@@ -100,10 +100,6 @@ const Orders = ({ user }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(productosSolicitud);
-  }, [productosSolicitud]);
-
   const handleViewDetail = (row) => {
     if (row.estado === "Rechazada") {
       setRejectedReason(row.nota);
