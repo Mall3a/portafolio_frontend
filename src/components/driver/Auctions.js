@@ -160,6 +160,10 @@ const Auctions = ({ user }) => {
       formattedValue: format(0),
       floatValue: null,
     });
+    setMakeOfferHasError(false);
+    setSuccess(false);
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const makeOffer = async (e) => {
