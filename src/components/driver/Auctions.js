@@ -10,7 +10,7 @@ import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Vehicles.module.scss";
-import { Alert, Button, Modal } from "@mui/material";
+import { Alert, Button, Chip, Modal } from "@mui/material";
 import { IconButton } from "@mui/material";
 import {
   DeleteForever,
@@ -19,6 +19,7 @@ import {
   CloseSharp,
   Search,
   Close,
+  AttachMoney,
 } from "@mui/icons-material";
 import { getAllSubastas } from "../../api/driverApis";
 import moment from "moment";
@@ -139,9 +140,13 @@ const Auctions = ({ user }) => {
                     <TableHead>
                       <TableRow>
                         <TableCell align="center">ID Subasta</TableCell>
-                        <TableCell align="center">ID Pedido</TableCell>
                         <TableCell align="center">Fecha Subasta</TableCell>
                         <TableCell align="center">Precio Inicial</TableCell>
+                        <TableCell align="center">ID Oferta Ganadora</TableCell>
+                        <TableCell align="center">ID Pedido</TableCell>
+                        <TableCell align="center">Fecha Pedido</TableCell>
+                        <TableCell align="center">Estado Pedido</TableCell>
+                        <TableCell align="center">Total Pedido</TableCell>
                         <TableCell align="center">Detalle Pedido</TableCell>
                         <TableCell align="center">Acción</TableCell>
                       </TableRow>
@@ -157,19 +162,52 @@ const Auctions = ({ user }) => {
                           <TableCell component="th" scope="row" align="center">
                             {row.id}
                           </TableCell>
-
-                          <TableCell component="th" scope="row" align="center">
-                            {row.pedido_id}
-                          </TableCell>
-
                           <TableCell component="th" scope="row" align="center">
                             {moment(row.fecha).format("MM/DD/YYYY")}
                           </TableCell>
-
-                          <TableCell align="center">
-                            {row.precio_piso}
+                          <TableCell align="right">
+                            {format(row.precio_piso)}
                           </TableCell>
-
+                          <TableCell align="center">
+                            {row.oferta_subasta_id === null
+                              ? "Asignación Pendiente"
+                              : row.oferta_subasta_id}
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="center">
+                            {row.pedido_id}
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="center">
+                            {moment(row.fecha_pedido).format("MM/DD/YYYY")}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.estado_pedido_id === 1 && (
+                              <Chip label={row.estado_pedido} color="default" />
+                            )}
+                            {row.estado_pedido_id === 2 && (
+                              <Chip label={row.estado_pedido} color="primary" />
+                            )}
+                            {row.estado_pedido_id === 3 && (
+                              <Chip label={row.estado_pedido} color="warning" />
+                            )}
+                            {row.estado_pedido_id === 4 && (
+                              <Chip label={row.estado_pedido} color="warning" />
+                            )}
+                            {row.estado_pedido_id === 5 && (
+                              <Chip label={row.estado_pedido} color="warning" />
+                            )}
+                            {row.estado_pedido_id === 6 && (
+                              <Chip label={row.estado_pedido} color="info" />
+                            )}
+                            {row.estado_pedido_id === 7 && (
+                              <Chip label={row.estado_pedido} color="success" />
+                            )}
+                            {row.estado_pedido_id === 8 && (
+                              <Chip label={row.estado_pedido} color="error" />
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            {format(row.total)}
+                          </TableCell>
                           <TableCell align="center">
                             <IconButton
                               edge="start"
@@ -185,6 +223,7 @@ const Auctions = ({ user }) => {
                               color="primary"
                               variant="contained"
                               onClick={() => console.log(row)}
+                              startIcon={<AttachMoney />}
                             >
                               Hacer Oferta
                             </Button>
