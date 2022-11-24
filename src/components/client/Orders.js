@@ -110,7 +110,6 @@ const Orders = ({ user }) => {
 
     if (response.status === 200) {
       setSolicitudes(data.pedido_usuario);
-
       setHasError(false);
       setLoading(false);
     } else {
@@ -147,7 +146,7 @@ const Orders = ({ user }) => {
     setSuccessMessage("");
     const response = await updateEstadoPedido(selectedOrder, orderStatusId);
     const data = response.data;
-    console.log(data);
+
     if (response.status === 200) {
       setLoadingUpdateStatus(false);
       setHasErrorUpdateStatus(false);
@@ -171,6 +170,7 @@ const Orders = ({ user }) => {
     setErrorMessageUpdateStatus("");
     setSelectedOrder(null);
     setSuccessMessage("");
+    getClientOrders();
   };
 
   const handleChange = (e) => {
@@ -484,22 +484,24 @@ const Orders = ({ user }) => {
                     </Select>
                   </FormControl>
 
-                  {hasErrorUpdateStatus && errorMessageUpdateStatus && (
-                    <Alert
-                      severity="error"
-                      onClose={() => setErrorMessageUpdateStatus("")}
-                    >
-                      {errorMessageUpdateStatus}
-                    </Alert>
-                  )}
-                  {successMessage && (
-                    <Alert
-                      severity="success"
-                      onClose={() => setSuccessMessage("")}
-                    >
-                      {successMessage}
-                    </Alert>
-                  )}
+                  <div className={styles.messagesContainer}>
+                    {hasErrorUpdateStatus && errorMessageUpdateStatus && (
+                      <Alert
+                        severity="error"
+                        onClose={() => setErrorMessageUpdateStatus("")}
+                      >
+                        {errorMessageUpdateStatus}
+                      </Alert>
+                    )}
+                    {successMessage && (
+                      <Alert
+                        severity="success"
+                        onClose={() => setSuccessMessage("")}
+                      >
+                        {successMessage}
+                      </Alert>
+                    )}
+                  </div>
                   <div className={styles.buttonsContainer}>
                     {loadingUpdateStatus ? (
                       <LoadingButton

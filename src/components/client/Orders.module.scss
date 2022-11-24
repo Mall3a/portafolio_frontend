@@ -46,6 +46,7 @@
 }
 
 .buttonsContainer {
+  padding-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -53,4 +54,8 @@
   justify-content: center;
   padding-bottom: 24px;
   gap: 20px;
+}
+
+.messagesContainer {
+  padding-top: 20px;
 }
