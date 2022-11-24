@@ -103,3 +103,10 @@ export const getDetallesPedidoUsuario = async (idPedido) => {
     in_id_pedido: idPedido,
   });
 };
+
+export const updateEstadoPedido = async (idPedido, idStatus) => {
+  return await axios.post(API_URL + "sp_update_estado_pedido/", {
+    in_id_pedido: idPedido,
+    in_new_status: idStatus,
+  });
+};

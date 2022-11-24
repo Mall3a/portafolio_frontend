@@ -44,3 +44,13 @@
     gap: 20px;
   }
 }
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  padding-bottom: 24px;
+  gap: 20px;
+}

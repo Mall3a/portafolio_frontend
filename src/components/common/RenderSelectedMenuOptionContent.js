@@ -11,6 +11,7 @@ import Vehicles from "../driver/Vehicles";
 import AuctionOffers from "../driver/AuctionOffers";
 import OrdersReports from "../consultant/OrdersReports";
 import SoldProductsReports from "../consultant/SoldProductsReports";
+import AssignedOrders from "../driver/AssignedOrders";
 
 const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
   return (
@@ -25,6 +26,9 @@ const RenderSelectedMenuOptionContent = observer(({ store, user }) => {
       {store.selectedMenuOption === "Subastas" && <Auctions user={user} />}
       {store.selectedMenuOption === "Transportes" && <Vehicles user={user} />}
       {store.selectedMenuOption === "Pedidos" && <Orders user={user} />}
+      {store.selectedMenuOption === "Pedidos Asignados" && (
+        <AssignedOrders user={user} />
+      )}
       {store.selectedMenuOption === "Solicitudes Pedidos" && (
         <OrderRequests user={user} />
       )}

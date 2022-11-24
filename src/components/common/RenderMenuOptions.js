@@ -93,13 +93,13 @@ const RenderMenuOptions = observer(({ store, user }) => {
       </ListItemButton>
 
       <ListItemButton
-        onClick={() => store.setSelectedMenuOption("Pedidos")}
-        selected={store.selectedMenuOption === "Pedidos"}
+        onClick={() => store.setSelectedMenuOption("Pedidos Asignados")}
+        selected={store.selectedMenuOption === "Pedidos Asignados"}
       >
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
-        <ListItemText primary="Pedidos" />
+        <ListItemText primary="Pedidos Asignados" />
       </ListItemButton>
       <ListItemButton
         onClick={() => store.setSelectedMenuOption("Transportes")}

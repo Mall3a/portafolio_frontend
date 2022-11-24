@@ -4,10 +4,14 @@ import {
   Button,
   Chip,
   CircularProgress,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Modal,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -18,14 +22,14 @@ import { Box } from "@mui/system";
 import styles from "./Orders.module.scss";
 import Title from "../common/Title";
 import {
-  getDetalleSolicitudPedido,
   getDetallesPedidoUsuario,
   getPedidosUsuario,
-  getSolicitudesPedidos,
+  updateEstadoPedido,
 } from "../../api/clientApis";
 import moment from "moment";
-import { Close, Search } from "@mui/icons-material";
+import { Close, Edit, Save, Search } from "@mui/icons-material";
 import Quality from "../common/Quality";
+import { LoadingButton } from "@mui/lab";
 
 const style = {
   position: "absolute",
@@ -33,6 +37,20 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 1200,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+
+const styleEditStatusModal = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -55,6 +73,26 @@ const Orders = ({ user }) => {
     useState("");
 
   const [toggleProductDetailModal, setToggleProductDetailModal] =
+    useState(false);
+
+  const [estadosPedido, setEstadosPedido] = useState([
+    {
+      id: 6,
+      label: "Recibido",
+    },
+    {
+      id: 8,
+      label: "Cancelado",
+    },
+  ]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderStatusId, setOrderStatusId] = useState(6);
+  const [loadingUpdateStatus, setLoadingUpdateStatus] = useState(false);
+  const [hasErrorUpdateStatus, setHasErrorUpdateStatus] = useState(false);
+  const [errorMessageUpdateStatus, setErrorMessageUpdateStatus] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [toggleUpdateOrderStatusModal, setToggleUpdateOrderStatusModal] =
     useState(false);
 
   const [rejectedReason, setRejectedReason] = useState("");
@@ -98,6 +136,46 @@ const Orders = ({ user }) => {
       );
       setLoadingProductosSolicitud(false);
     }
+  };
+
+  const updateOrderStatus = async (e) => {
+    //Prevent page reload
+    e.preventDefault();
+    setLoadingUpdateStatus(true);
+    setHasErrorUpdateStatus(false);
+    setErrorMessageUpdateStatus("");
+    setSuccessMessage("");
+    const response = await updateEstadoPedido(selectedOrder, orderStatusId);
+    const data = response.data;
+    console.log(data);
+    if (response.status === 200) {
+      setLoadingUpdateStatus(false);
+      setHasErrorUpdateStatus(false);
+      setErrorMessageUpdateStatus("");
+      setSuccessMessage("Estado modificado exitosamente");
+    } else {
+      setLoadingUpdateStatus(false);
+      setHasErrorUpdateStatus(true);
+      setErrorMessageUpdateStatus("Error al editar el estado del pedido");
+    }
+  };
+
+  const handleUpdateOrderStatus = (row) => {
+    setSelectedOrder(row.pedido_id);
+    setToggleUpdateOrderStatusModal(true);
+  };
+
+  const handleCloseUpdateOrderStatusModal = () => {
+    setToggleUpdateOrderStatusModal(false);
+    setHasErrorUpdateStatus(false);
+    setErrorMessageUpdateStatus("");
+    setSelectedOrder(null);
+    setSuccessMessage("");
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    setOrderStatusId(e.target.value);
   };
 
   const handleViewDetail = (row) => {
@@ -152,6 +230,7 @@ const Orders = ({ user }) => {
                         </TableCell>
                         <TableCell align="center">Valor Total Pedido</TableCell>
                         <TableCell align="center">Detalle Pedido</TableCell>
+                        <TableCell align="center">Editar Estado</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -217,6 +296,16 @@ const Orders = ({ user }) => {
                               style={{ alignSelf: "end", color: "#1976d2" }}
                             >
                               <Search />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton
+                              edge="start"
+                              color="inherit"
+                              onClick={() => handleUpdateOrderStatus(row)}
+                              style={{ alignSelf: "end", color: "#1976d2" }}
+                            >
+                              <Edit />
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -358,6 +447,83 @@ const Orders = ({ user }) => {
                     {rejectedReason}
                   </Alert>
                 )}
+              </Box>
+            </Modal>
+          )}
+          {toggleUpdateOrderStatusModal && (
+            <Modal open={toggleUpdateOrderStatusModal} disableEscapeKeyDown>
+              <Box sx={styleEditStatusModal}>
+                <div className={styles.modalTitleContainer}>
+                  <Title>Editar Estado del Pedido</Title>
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleCloseUpdateOrderStatusModal}
+                    style={{ alignSelf: "end" }}
+                  >
+                    <Close />
+                  </IconButton>
+                </div>
+
+                <form onSubmit={updateOrderStatus}>
+                  <FormControl fullWidth>
+                    <InputLabel>Estados</InputLabel>
+                    <Select
+                      value={orderStatusId}
+                      label="Productos"
+                      onChange={handleChange}
+                      style={{ width: 200 }}
+                    >
+                      {estadosPedido.map((estado, index) => {
+                        return (
+                          <MenuItem key={index} value={estado.id}>
+                            {estado.label}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+
+                  {hasErrorUpdateStatus && errorMessageUpdateStatus && (
+                    <Alert
+                      severity="error"
+                      onClose={() => setErrorMessageUpdateStatus("")}
+                    >
+                      {errorMessageUpdateStatus}
+                    </Alert>
+                  )}
+                  {successMessage && (
+                    <Alert
+                      severity="success"
+                      onClose={() => setSuccessMessage("")}
+                    >
+                      {successMessage}
+                    </Alert>
+                  )}
+                  <div className={styles.buttonsContainer}>
+                    {loadingUpdateStatus ? (
+                      <LoadingButton
+                        color="secondary"
+                        loading={loadingUpdateStatus}
+                        loadingPosition="start"
+                        variant="contained"
+                        startIcon={<Save />}
+                      >
+                        Agregar
+                      </LoadingButton>
+                    ) : (
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={styles.addProductButton}
+                        disabled={!orderStatusId}
+                      >
+                        Editar estado
+                      </Button>
+                    )}
+                  </div>
+                </form>
               </Box>
             </Modal>
           )}
