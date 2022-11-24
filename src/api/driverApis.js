@@ -65,3 +65,9 @@ export const insertOfertaSubasta = async (rut, subastaId, valorOferta) => {
     in_valor_ofertado: valorOferta,
   });
 };
+
+export const getOfertasSubastas = async (rut) => {
+  return await axios.post(API_URL + "sp_get_all_ofertas_usuario/", {
+    in_rut: rut,
+  });
+};
