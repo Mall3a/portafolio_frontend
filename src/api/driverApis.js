@@ -71,3 +71,9 @@ export const getOfertasSubastas = async (rut) => {
     in_rut: rut,
   });
 };
+
+export const getPedidosAsignados = async (rut) => {
+  return await axios.post(API_URL + "sp_get_oferta_subasta_rut/", {
+    in_rut: rut,
+  });
+};

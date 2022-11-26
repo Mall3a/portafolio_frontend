@@ -10,16 +10,15 @@ import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import styles from "./Vehicles.module.scss";
-import { Alert } from "@mui/material";
-
-import { CheckSharp, CloseSharp } from "@mui/icons-material";
-import { getOfertasSubastas } from "../../api/driverApis";
+import { Alert, Chip, IconButton } from "@mui/material";
+import { getPedidosAsignados } from "../../api/driverApis";
 import moment from "moment";
+import { Edit, Search } from "@mui/icons-material";
 
 const AssignedOrders = ({ user }) => {
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
-  let [auctionsOffers, setAuctionsOffers] = useState([]);
+  let [assignedOrders, setAssignedOrders] = useState([]);
 
   const format = (numStr) => {
     if (numStr === "") return "";
@@ -31,24 +30,20 @@ const AssignedOrders = ({ user }) => {
   };
 
   useEffect(() => {
-    //getActionOffers();
+    getAssignedOrders();
   }, []);
 
-  const getActionOffers = async () => {
+  const getAssignedOrders = async () => {
     setLoading(true);
     setHasError(false);
 
-    const response = await getOfertasSubastas(user.rut);
+    const response = await getPedidosAsignados(user.rut);
 
     const data = response.data;
 
     if (response.status === 200) {
-      if (data.ofertas_subasta.length > 0) {
-        setAuctionsOffers(data.ofertas_subasta);
-      } else {
-        setAuctionsOffers(data.ofertas_subasta);
-        setHasError(false);
-      }
+      setAssignedOrders(data.ofertas_subastas);
+      console.log(data.ofertas_subastas);
       setLoading(false);
     } else {
       setHasError(true);
@@ -64,23 +59,28 @@ const AssignedOrders = ({ user }) => {
         </Box>
       ) : (
         <Grid item xs={12}>
-          {auctionsOffers.length > 0 ? (
+          {assignedOrders.length > 0 ? (
             <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
               <React.Fragment>
-                <Title>Ofertas realizadas a subastas</Title>
+                <Title>Pedidos asignados</Title>
                 <Table size="large">
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Fecha Oferta</TableCell>
+                      <TableCell align="center">ID Pedido</TableCell>
                       <TableCell align="center">ID Oferta</TableCell>
-                      <TableCell align="center">ID Subasta</TableCell>
-                      <TableCell align="center">Fecha Subasta</TableCell>
-                      <TableCell align="center">Monto ofertado</TableCell>
-                      <TableCell align="center">Precio Inicial</TableCell>
+                      <TableCell align="center">ID Solicitud</TableCell>
+                      <TableCell align="center">Valor Total Pedido</TableCell>
+                      <TableCell align="center">
+                        Total Valor Transporte
+                      </TableCell>
+                      <TableCell align="center">Estado Pedido</TableCell>
+                      <TableCell align="center">Dirección Destino</TableCell>
+                      <TableCell align="center">Detalle Pedido</TableCell>
+                      <TableCell align="center">Editar Estado</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {auctionsOffers.map((row, index) => (
+                    {assignedOrders.map((row, index) => (
                       <TableRow
                         key={index}
                         sx={{
@@ -88,24 +88,66 @@ const AssignedOrders = ({ user }) => {
                         }}
                       >
                         <TableCell component="th" scope="row" align="center">
-                          {moment(row.fecha_oferta).format("MM/DD/YYYY")}
+                          {row.id_pedido}
                         </TableCell>
                         <TableCell component="th" scope="row" align="center">
                           {row.oferta_subasta_id}
                         </TableCell>
                         <TableCell component="th" scope="row" align="center">
-                          {row.subasta_id}
+                          {row.solicitud_pedido_id}
                         </TableCell>
-                        <TableCell component="th" scope="row" align="center">
-                          {moment(row.fecha_inicio_subasta).format(
-                            "MM/DD/YYYY"
+                        <TableCell align="center">
+                          {format(row.total_pedido)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {format(row.valor_subasta_ganadora)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.estado_pedido_id === 1 && (
+                            <Chip label={row.estado_pedido} color="default" />
+                          )}
+                          {row.estado_pedido_id === 2 && (
+                            <Chip label={row.estado_pedido} color="primary" />
+                          )}
+                          {row.estado_pedido_id === 3 && (
+                            <Chip label={row.estado_pedido} color="warning" />
+                          )}
+                          {row.estado_pedido_id === 4 && (
+                            <Chip label={row.estado_pedido} color="warning" />
+                          )}
+                          {row.estado_pedido_id === 5 && (
+                            <Chip label={row.estado_pedido} color="warning" />
+                          )}
+                          {row.estado_pedido_id === 6 && (
+                            <Chip label={row.estado_pedido} color="info" />
+                          )}
+                          {row.estado_pedido_id === 7 && (
+                            <Chip label={row.estado_pedido} color="success" />
+                          )}
+                          {row.estado_pedido_id === 8 && (
+                            <Chip label={row.estado_pedido} color="error" />
                           )}
                         </TableCell>
+                        <TableCell align="center">{row.direccion}</TableCell>
                         <TableCell align="center">
-                          {format(row.monto_ofertado)}
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            //  onClick={() => handleViewDetail(row)}
+                            style={{ alignSelf: "end", color: "#1976d2" }}
+                          >
+                            <Search />
+                          </IconButton>
                         </TableCell>
                         <TableCell align="center">
-                          {format(row.precio_piso)}
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            //  onClick={() => handleUpdateOrderStatus(row)}
+                            style={{ alignSelf: "end", color: "#1976d2" }}
+                          >
+                            <Edit />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -115,8 +157,7 @@ const AssignedOrders = ({ user }) => {
             </Paper>
           ) : hasError ? (
             <Alert severity="error">
-              Ha ocurrido un error al intentar obtener la lista de ofertas de
-              subastas
+              Ha ocurrido un error al obtener la lista de pedidos asignados
             </Alert>
           ) : (
             <Alert severity="info">
