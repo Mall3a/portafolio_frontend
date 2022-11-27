@@ -225,14 +225,17 @@ const AssignedOrders = ({ user }) => {
                   <Table size="large">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">ID Solicitud</TableCell>
-                        <TableCell align="center">Fecha Solicitud</TableCell>
                         <TableCell align="center">ID Pedido</TableCell>
                         <TableCell align="center">Fecha Pedido</TableCell>
                         <TableCell align="center">Dirección Destino</TableCell>
                         <TableCell align="center">Estado Pedido</TableCell>
 
                         <TableCell align="center">Valor Total Pedido</TableCell>
+                        <TableCell align="center">
+                          Total Valor Transporte
+                        </TableCell>
+                        <TableCell align="center">Cliente</TableCell>
+
                         <TableCell align="center">Detalle Pedido</TableCell>
                         <TableCell align="center">Editar Estado</TableCell>
                       </TableRow>
@@ -247,12 +250,6 @@ const AssignedOrders = ({ user }) => {
                             },
                           }}
                         >
-                          <TableCell align="center">
-                            {row.solicitud_pedido_id}
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="center">
-                            {moment(row.fecha_solicitud).format("MM/DD/YYYY")}
-                          </TableCell>
                           <TableCell align="center">{row.id_pedido}</TableCell>
                           <TableCell component="th" scope="row" align="center">
                             {moment(row.fecha_pedido).format("MM/DD/YYYY")}
@@ -290,6 +287,13 @@ const AssignedOrders = ({ user }) => {
                           <TableCell align="right">
                             {format(row.total_pedido)}
                           </TableCell>
+                          <TableCell align="right">
+                            {format(row.valor_subasta_ganadora)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.rut_usuario_solicitante}
+                          </TableCell>
+
                           <TableCell align="center">
                             <IconButton
                               edge="start"
