@@ -1,0 +1,61 @@
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+  position: absolute;
+}
+
+.loadingProductosSolicitudContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+  position: absolute;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-bottom: 24px;
+}
+
+.modalTitleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.deleteContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  padding: 20px 0px 0px 0px;
+  gap: 20px;
+
+  .modalButtonsContainer {
+    display: flex;
+    margin-top: 20px;
+    align-self: end;
+    gap: 20px;
+  }
+}
+
+.buttonsContainer {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  padding-bottom: 24px;
+  gap: 20px;
+}
+
+.messagesContainer {
+  padding-top: 20px;
+}
