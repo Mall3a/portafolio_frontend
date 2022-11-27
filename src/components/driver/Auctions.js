@@ -175,7 +175,7 @@ const Auctions = ({ user }) => {
     setSuccessMessage("");
 
     if (precio) {
-      if (precio.value > selectedAuction.precio_piso) {
+      if (precio.value < selectedAuction.precio_piso) {
         const response = await insertOfertaSubasta(
           user.rut,
           selectedAuction.id,
@@ -206,7 +206,7 @@ const Auctions = ({ user }) => {
         setMakeOfferHasError(true);
         setLoadingMakeOffer(false);
         setErrorMessage(
-          "Precio debe ser mayor al precio inicial de la subasta"
+          "Precio debe ser menor al precio inicial de la subasta"
         );
       }
     } else {
