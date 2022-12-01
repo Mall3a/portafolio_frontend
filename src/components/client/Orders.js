@@ -282,8 +282,9 @@ const Orders = ({ user }) => {
                           </TableCell>
 
                           <TableCell align="center">
-                            {row.oferta_subasta_id === null &&
-                              "Asignación Pendiente"}
+                            {row.oferta_subasta_id === null
+                              ? "Asignación Pendiente"
+                              : row.oferta_subasta_id}
                           </TableCell>
                           <TableCell align="right">
                             {format(row.total)}
